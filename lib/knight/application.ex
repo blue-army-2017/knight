@@ -11,8 +11,7 @@ defmodule Knight.Application do
       KnightWeb.Telemetry,
       Knight.Repo,
       {Ecto.Migrator,
-        repos: Application.fetch_env!(:knight, :ecto_repos),
-        skip: skip_migrations?()},
+       repos: Application.fetch_env!(:knight, :ecto_repos), skip: skip_migrations?()},
       {DNSCluster, query: Application.get_env(:knight, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Knight.PubSub},
       # Start the Finch HTTP client for sending emails
