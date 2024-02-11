@@ -4,7 +4,11 @@ defmodule KnightWeb.MemberControllerTest do
   import Knight.MembersFixtures
 
   @create_attrs %{active: true, firstName: "some firstName", lastName: "some lastName"}
-  @update_attrs %{active: false, firstName: "some updated firstName", lastName: "some updated lastName"}
+  @update_attrs %{
+    active: false,
+    firstName: "some updated firstName",
+    lastName: "some updated lastName"
+  }
   @invalid_attrs %{active: nil, firstName: nil, lastName: nil}
 
   describe "index" do

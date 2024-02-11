@@ -18,7 +18,7 @@ defmodule Knight.Members do
 
   """
   def list_members do
-    Repo.all(Member)
+    Repo.all(from(m in Member, order_by: [asc: m.lastName, asc: m.firstName]))
   end
 
   @doc """

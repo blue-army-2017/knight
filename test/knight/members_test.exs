@@ -35,7 +35,12 @@ defmodule Knight.MembersTest do
 
     test "update_member/2 with valid data updates the member" do
       member = member_fixture()
-      update_attrs = %{active: false, firstName: "some updated firstName", lastName: "some updated lastName"}
+
+      update_attrs = %{
+        active: false,
+        firstName: "some updated firstName",
+        lastName: "some updated lastName"
+      }
 
       assert {:ok, %Member{} = member} = Members.update_member(member, update_attrs)
       assert member.active == false
