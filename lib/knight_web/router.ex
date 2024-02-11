@@ -20,6 +20,12 @@ defmodule KnightWeb.Router do
     get "/", PageController, :home
   end
 
+  scope "/members", KnightWeb do
+    pipe_through :browser
+
+    resources "/", MemberController
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", KnightWeb do
   #   pipe_through :api
