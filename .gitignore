@@ -22,3 +22,6 @@ knight
 
 # Go workspace file
 go.work
+
+# Assets
+assets/css/pico.*

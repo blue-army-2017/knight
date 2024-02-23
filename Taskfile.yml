@@ -22,6 +22,7 @@ tasks:
     cmds:
       - go build .
     deps:
-      - format
-      - lint
-      - test
+      - download-assets
+  download-assets:
+    cmds:
+      - wget "https://raw.githubusercontent.com/picocss/pico/v2.0.3/css/pico.blue.min.css" -O assets/css/pico.css
