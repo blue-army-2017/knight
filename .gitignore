@@ -28,3 +28,6 @@ assets/css/pico.*
 
 # Taskfile
 .task
+
+# Database
+*.db

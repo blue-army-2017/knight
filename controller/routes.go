@@ -10,6 +10,8 @@ func GetRoutesMux() *http.ServeMux {
 
 	mux.HandleFunc("/", getHome)
 
+	mux.HandleFunc("/members", getMembers)
+
 	return mux
 }
 
