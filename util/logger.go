@@ -14,6 +14,10 @@ func init() {
 	logger = l.Sugar()
 }
 
+func LogDebug(msg string, data ...any) {
+	logger.Debugw(msg, data...)
+}
+
 func LogInfo(msg string, data ...any) {
 	logger.Infow(msg, data...)
 }

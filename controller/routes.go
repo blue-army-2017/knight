@@ -8,6 +8,8 @@ func GetRoutesMux() *http.ServeMux {
 	mux.Handle("/static/", assetsHandler())
 	mux.HandleFunc("/health", getHealth)
 
+	mux.HandleFunc("/", getHome)
+
 	return mux
 }
 
