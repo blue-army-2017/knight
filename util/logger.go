@@ -15,17 +15,17 @@ func init() {
 }
 
 func LogInfo(msg string, data ...any) {
-	logger.Infow(msg, data)
+	logger.Infow(msg, data...)
 }
 
 func LogWarn(msg string, data ...any) {
-	logger.Warnw(msg, data)
+	logger.Warnw(msg, data...)
 }
 
 func LogError(msg string, data ...any) {
-	logger.Errorw(msg, data)
+	logger.Errorw(msg, data...)
 }
 
 func LogFatal(msg string, data ...any) {
-	logger.Fatalw(msg, data)
+	logger.Fatalw(msg, data...)
 }
