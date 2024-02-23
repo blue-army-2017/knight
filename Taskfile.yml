@@ -7,6 +7,14 @@ tasks:
     cmds:
       - go run .
     silent: true
+    deps:
+      - download-assets
+  build:
+    cmds:
+      - go build .
+    silent: true
+    deps:
+      - download-assets
 
   format:
     cmds:
@@ -18,11 +26,6 @@ tasks:
     cmds:
       - go test ./...
 
-  build:
-    cmds:
-      - go build .
-    deps:
-      - download-assets
   download-assets:
     cmds:
       - ./assets/download.sh
@@ -30,3 +33,4 @@ tasks:
       - assets/download.sh
     generates:
       - assets/css/pico.css
+    silent: true
