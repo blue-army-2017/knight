@@ -16,6 +16,11 @@ tasks:
     deps:
       - download-assets
 
+  check:
+    deps:
+      - format
+      - lint
+      - test
   format:
     cmds:
       - go fmt ./...
