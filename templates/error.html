@@ -1,0 +1,22 @@
+{{- define "body" -}}
+<article>
+  <h1>Oops, something went wrong (._.</h1>
+
+  <span>
+    An unexpected error has occurred. Please contact your administrator for
+    assistance.
+  </span>
+
+  {{- with .Error -}}
+  <hr />
+  <details>
+    <summary>Message</summary>
+    <p>{{ . }}</p>
+  </details>
+  {{- end -}}
+
+  <footer>
+    <a href="/" role="button" class="contrast">Back to Home</a>
+  </footer>
+</article>
+{{- end -}}

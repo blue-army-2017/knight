@@ -6,15 +6,13 @@ import (
 	"strings"
 
 	"github.com/blue-army-2017/knight/model"
-	"github.com/blue-army-2017/knight/util"
 	"github.com/blue-army-2017/knight/view"
 )
 
 func getMembers(w http.ResponseWriter, r *http.Request) {
 	members, err := model.FindAllMembers()
 	if err != nil {
-		util.LogError(err.Error())
-		http.Error(w, err.Error(), 500)
+		view.ShowErrorPage(w, err)
 		return
 	}
 
@@ -32,8 +30,7 @@ func newMember(w http.ResponseWriter, r *http.Request) {
 
 func postNewMember(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
-		util.LogError(err.Error())
-		http.Error(w, err.Error(), 400)
+		view.ShowErrorPage(w, err)
 		return
 	}
 
@@ -64,8 +61,7 @@ func editMember(w http.ResponseWriter, r *http.Request) {
 
 	member, err := model.FindMemberByID(id)
 	if err != nil {
-		util.LogError(err.Error())
-		http.Error(w, err.Error(), 500)
+		view.ShowErrorPage(w, err)
 		return
 	}
 
@@ -78,8 +74,7 @@ func editMember(w http.ResponseWriter, r *http.Request) {
 func postEditMember(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 	if err := r.ParseForm(); err != nil {
-		util.LogError(err.Error())
-		http.Error(w, err.Error(), 400)
+		view.ShowErrorPage(w, err)
 		return
 	}
 
@@ -111,14 +106,12 @@ func deleteMember(w http.ResponseWriter, r *http.Request) {
 
 	member, err := model.FindMemberByID(id)
 	if err != nil {
-		util.LogError(err.Error())
-		http.Error(w, err.Error(), 500)
+		view.ShowErrorPage(w, err)
 		return
 	}
 
 	if err := member.Delete(); err != nil {
-		util.LogError(err.Error())
-		http.Error(w, err.Error(), 500)
+		view.ShowErrorPage(w, err)
 		return
 	}
 
