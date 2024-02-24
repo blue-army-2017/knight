@@ -1,0 +1,26 @@
+{{- define "form" -}}
+<form method="post">
+  <fieldset>
+    <label>
+      <span>First Name</span>
+      <input type="text" name="first_name" value="{{ .FirstName }}" />
+    </label>
+
+    <label>
+      <span>Last Name</span>
+      <input type="text" name="last_name" value="{{ .LastName }}" />
+    </label>
+
+    <label>
+      {{- if .Active -}}
+      <input type="checkbox" name="active" role="switch" checked />
+      {{- else -}}
+      <input type="checkbox" name="active" role="switch" />
+      {{- end -}}
+      <span>Active</span>
+    </label>
+  </fieldset>
+
+  <input type="submit" value="Save" />
+</form>
+{{- end -}}

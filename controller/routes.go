@@ -6,6 +6,8 @@ var routes = map[string]func(w http.ResponseWriter, r *http.Request){
 	"/health":              getHealth,
 	"/":                    getHome,
 	"/members":             getMembers,
+	"/members/new":         newMember,
+	"POST /members/new":    postNewMember,
 	"/members/{id}/delete": deleteMember,
 }
 

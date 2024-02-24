@@ -16,3 +16,20 @@ func (p *MembersPage) Render(w io.Writer) {
 
 	page.ExecuteTemplate(w, "page", p)
 }
+
+type MembersNewPage struct {
+	Member *model.Member
+	Flash  *Flash
+}
+
+func (p *MembersNewPage) Render(w io.Writer) {
+	page := pages["members_new"]
+
+	if p.Member == nil {
+		p.Member = &model.Member{
+			Active: true,
+		}
+	}
+
+	page.ExecuteTemplate(w, "page", p)
+}
