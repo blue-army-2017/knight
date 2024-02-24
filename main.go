@@ -8,8 +8,6 @@ import (
 	"go.uber.org/zap"
 )
 
-const port string = "8080"
-
 var l *zap.SugaredLogger
 
 func init() {
@@ -19,8 +17,8 @@ func init() {
 func main() {
 	mux := controller.GetRoutesMux()
 
-	l.Infof("server has started on port %s", port)
-	if err := http.ListenAndServe(":"+port, mux); err != nil {
+	l.Infof("server has started on port %s", util.Config.Port)
+	if err := http.ListenAndServe(":"+util.Config.Port, mux); err != nil {
 		l.Fatal(err)
 	}
 }

@@ -29,6 +29,7 @@ assets/font/material-symbols.woff2
 
 # Taskfile
 .task
+.env
 
 # Database
 *.db
