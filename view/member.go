@@ -33,3 +33,14 @@ func (p *MembersNewPage) Render(w io.Writer) {
 
 	page.ExecuteTemplate(w, "page", p)
 }
+
+type MembersEditPage struct {
+	Member *model.Member
+	Flash  *Flash
+}
+
+func (p *MembersEditPage) Render(w io.Writer) {
+	page := pages["members_edit"]
+
+	page.ExecuteTemplate(w, "page", p)
+}

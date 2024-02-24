@@ -40,6 +40,15 @@ func (m *Member) Create() error {
 	return result.Error
 }
 
+func (m *Member) Update() error {
+	if err := m.Validate(); err != nil {
+		return err
+	}
+
+	result := db.Save(m)
+	return result.Error
+}
+
 func (m *Member) Delete() error {
 	result := db.Delete(m)
 	return result.Error

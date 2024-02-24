@@ -18,4 +18,5 @@ func init() {
 
 	pages["members"] = template.Must(template.ParseFiles("templates/members/index.html", "templates/layout.html"))
 	pages["members_new"] = template.Must(template.ParseFiles("templates/members/form.html", "templates/members/new.html", "templates/layout.html"))
+	pages["members_edit"] = template.Must(template.ParseFiles("templates/members/form.html", "templates/members/edit.html", "templates/layout.html"))
 }

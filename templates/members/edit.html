@@ -1,0 +1,13 @@
+{{- define "body" -}}
+<nav aria-label="breadcrumb">
+  <ul>
+    <li><a href="/members">Members</a></li>
+    <li>{{ .Member.ID }}</li>
+    <li>Edit</li>
+  </ul>
+</nav>
+
+<!-- Member Form -->
+{{ template "form" .Member }}
+<!-- -->
+{{- end -}}

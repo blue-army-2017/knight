@@ -3,12 +3,14 @@ package controller
 import "net/http"
 
 var routes = map[string]func(w http.ResponseWriter, r *http.Request){
-	"/health":              getHealth,
-	"/":                    getHome,
-	"/members":             getMembers,
-	"/members/new":         newMember,
-	"POST /members/new":    postNewMember,
-	"/members/{id}/delete": deleteMember,
+	"/health":                 getHealth,
+	"/":                       getHome,
+	"/members":                getMembers,
+	"/members/new":            newMember,
+	"POST /members/new":       postNewMember,
+	"/members/{id}/edit":      editMember,
+	"POST /members/{id}/edit": postEditMember,
+	"/members/{id}/delete":    deleteMember,
 }
 
 func GetRoutesMux() *http.ServeMux {
