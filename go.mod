@@ -1,6 +1,6 @@
 module github.com/blue-army-2017/knight
 
-go 1.22
+go 1.22.0
 
 require (
 	go.uber.org/zap v1.27.0
