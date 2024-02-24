@@ -2,16 +2,22 @@ package controller
 
 import "net/http"
 
+var routes = map[string]func(w http.ResponseWriter, r *http.Request){
+	"/health":              getHealth,
+	"/":                    getHome,
+	"/members":             getMembers,
+	"/members/{id}/delete": deleteMember,
+}
+
 func GetRoutesMux() *http.ServeMux {
 	mux := http.NewServeMux()
 
 	mux.Handle("/static/", assetsHandler())
-	mux.HandleFunc("/health", getHealth)
 
-	mux.HandleFunc("/", getHome)
-
-	mux.HandleFunc("/members", getMembers)
-	mux.HandleFunc("/members/{id}/delete", deleteMember)
+	for route, handler := range routes {
+		handleFunc := logMiddleware(handler)
+		mux.HandleFunc(route, handleFunc)
+	}
 
 	return mux
 }

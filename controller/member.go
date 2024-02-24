@@ -10,8 +10,6 @@ import (
 )
 
 func getMembers(w http.ResponseWriter, r *http.Request) {
-	util.LogDebug("request received", "path", "/members", "method", "GET")
-
 	members, err := model.FindAllMembers()
 	if err != nil {
 		util.LogError(err.Error())
@@ -28,7 +26,6 @@ func getMembers(w http.ResponseWriter, r *http.Request) {
 
 func deleteMember(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
-	util.LogDebug("request received", "path", fmt.Sprintf("/members/%s/delete", id), "method", "GET")
 
 	member, err := model.FindMemberByID(id)
 	if err != nil {
