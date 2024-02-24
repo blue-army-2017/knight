@@ -6,9 +6,7 @@
 
   <ul>
     <li>
-      <a href="/members/new" role="button" class="material-symbols-outlined">
-        person_add
-      </a>
+      <a href="/members/new" role="button" class="symbol">person_add</a>
     </li>
   </ul>
 </nav>
@@ -28,23 +26,19 @@
       <th scope="row">{{ .LastName }}</th>
       <td>{{ .FirstName }}</td>
       <td>
-        <span class="material-symbols-outlined">
+        <span class="symbol">
           {{ if .Active }}person_check{{ else }}person_cancel{{ end }}
         </span>
       </td>
       <td>
-        <a
-          href="/members/{{ .ID }}/edit"
-          role="button"
-          class="material-symbols-outlined"
-        >
+        <a href="/members/{{ .ID }}/edit" role="button" class="symbol">
           edit
         </a>
         <a
           href="/members/{{ .ID }}/delete"
           role="button"
           data-confirm="Are you sure you want to delete member {{ .FirstName }} {{ .LastName }}?"
-          class="material-symbols-outlined"
+          class="symbol"
         >
           delete
         </a>
