@@ -34,11 +34,7 @@ func postNewMember(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	member := model.Member{
-		FirstName: strings.TrimSpace(r.FormValue("first_name")),
-		LastName:  strings.TrimSpace(r.FormValue("last_name")),
-		Active:    r.FormValue("active") == "on",
-	}
+	member := parseMember(r)
 
 	if err := member.Create(); err != nil {
 		page := view.MembersNewPage{
@@ -78,12 +74,8 @@ func postEditMember(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	member := model.Member{
-		ID:        id,
-		FirstName: strings.TrimSpace(r.FormValue("first_name")),
-		LastName:  strings.TrimSpace(r.FormValue("last_name")),
-		Active:    r.FormValue("active") == "on",
-	}
+	member := parseMember(r)
+	member.ID = id
 
 	if err := member.Update(); err != nil {
 		page := view.MembersEditPage{
@@ -117,4 +109,12 @@ func deleteMember(w http.ResponseWriter, r *http.Request) {
 
 	setFlash(w, "success", fmt.Sprintf("Successfully deleted member %s %s", member.FirstName, member.LastName))
 	http.Redirect(w, r, "/members", 302)
+}
+
+func parseMember(r *http.Request) model.Member {
+	return model.Member{
+		FirstName: strings.TrimSpace(r.FormValue("first_name")),
+		LastName:  strings.TrimSpace(r.FormValue("last_name")),
+		Active:    r.FormValue("active") == "on",
+	}
 }
