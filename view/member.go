@@ -14,7 +14,10 @@ type MembersPage struct {
 func (p *MembersPage) Render(w io.Writer) {
 	page := pages["members"]
 
-	page.ExecuteTemplate(w, "page", p)
+	err := page.ExecuteTemplate(w, "page", p)
+	if err != nil {
+		l.Error(err)
+	}
 }
 
 type MembersNewPage struct {
@@ -31,7 +34,10 @@ func (p *MembersNewPage) Render(w io.Writer) {
 		}
 	}
 
-	page.ExecuteTemplate(w, "page", p)
+	err := page.ExecuteTemplate(w, "page", p)
+	if err != nil {
+		l.Error(err)
+	}
 }
 
 type MembersEditPage struct {
@@ -42,5 +48,8 @@ type MembersEditPage struct {
 func (p *MembersEditPage) Render(w io.Writer) {
 	page := pages["members_edit"]
 
-	page.ExecuteTemplate(w, "page", p)
+	err := page.ExecuteTemplate(w, "page", p)
+	if err != nil {
+		l.Error(err)
+	}
 }

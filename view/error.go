@@ -2,8 +2,6 @@ package view
 
 import (
 	"io"
-
-	"github.com/blue-army-2017/knight/util"
 )
 
 type ErrorPage struct {
@@ -16,7 +14,7 @@ func (p *ErrorPage) Render(w io.Writer) {
 
 	err := page.ExecuteTemplate(w, "page", p)
 	if err != nil {
-		util.LogError(err.Error())
+		l.Error(err)
 	}
 }
 
