@@ -8,6 +8,7 @@ import (
 
 type MembersPage struct {
 	Members []model.Member
+	Flash   Flash
 }
 
 func (p *MembersPage) Render(w io.Writer) {

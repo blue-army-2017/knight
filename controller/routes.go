@@ -11,6 +11,7 @@ func GetRoutesMux() *http.ServeMux {
 	mux.HandleFunc("/", getHome)
 
 	mux.HandleFunc("/members", getMembers)
+	mux.HandleFunc("/members/{id}/delete", deleteMember)
 
 	return mux
 }

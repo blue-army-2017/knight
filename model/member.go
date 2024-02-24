@@ -18,3 +18,14 @@ func FindAllMembers() (members []Member, err error) {
 	err = result.Error
 	return
 }
+
+func FindMemberByID(id string) (member Member, err error) {
+	result := db.First(&member, id)
+	err = result.Error
+	return
+}
+
+func (m *Member) Delete() error {
+	result := db.Delete(m)
+	return result.Error
+}

@@ -2,3 +2,23 @@
   height: 50px;
   border-radius: 50px;
 }
+
+article.info {
+  background-color: #058686;
+  color: white;
+}
+
+article.success {
+  background-color: #398712;
+  color: white;
+}
+
+article.warn {
+  background-color: #d24317;
+  color: white;
+}
+
+article.error {
+  background-color: #d93526;
+  color: white;
+}

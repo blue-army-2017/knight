@@ -13,6 +13,10 @@
   </ul>
 </nav>
 
+{{- if not (eq .Flash.Message "") -}}
+<article class="{{ or .Flash.Type `info`}}">{{ .Flash.Message }}</article>
+{{- end -}}
+
 <table>
   <thead>
     <tr>
@@ -41,8 +45,9 @@
           edit
         </a>
         <a
-          href="/members/{{ .ID }}"
+          href="/members/{{ .ID }}/delete"
           role="button"
+          data-confirm="Are you sure you want to delete member {{ .FirstName }} {{ .LastName }}?"
           class="material-symbols-outlined"
         >
           delete
