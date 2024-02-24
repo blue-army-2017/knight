@@ -20,17 +20,17 @@ func setFlash(w http.ResponseWriter, t string, msg string) {
 	http.SetCookie(w, &cookie)
 }
 
-func getFlash(w http.ResponseWriter, r *http.Request) view.Flash {
+func getFlash(w http.ResponseWriter, r *http.Request) *view.Flash {
 	cookie, _ := r.Cookie(flashCookie)
 	if cookie == nil {
-		return view.Flash{}
+		return nil
 	}
 
 	cookie.MaxAge = -1
 	http.SetCookie(w, cookie)
 
 	vals := strings.SplitN(cookie.Value, "_", 2)
-	return view.Flash{
+	return &view.Flash{
 		Type:    vals[0],
 		Message: vals[1],
 	}

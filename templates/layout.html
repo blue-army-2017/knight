@@ -27,7 +27,15 @@
         </ul>
       </nav>
     </header>
-    <main class="container">{{ template "body" . }}</main>
+    <main class="container">
+      <!-- Flash -->
+      {{- with .Flash -}}
+      <article class="{{ or .Type `info`}}">{{ .Message }}</article>
+      {{- end -}}
+      <!-- -->
+
+      {{ template "body" . }}
+    </main>
   </body>
 </html>
 {{- end -}}
