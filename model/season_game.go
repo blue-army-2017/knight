@@ -78,5 +78,9 @@ func (g *SeasonGame) Validate() error {
 		return fmt.Errorf("Season ID must be set")
 	}
 
+	if len(g.PresentMembers) == 0 {
+		return fmt.Errorf("At least one member must be present")
+	}
+
 	return nil
 }
