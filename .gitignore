@@ -33,3 +33,4 @@ assets/font/material-symbols.woff2
 
 # Database
 *.db
+data/*.json
