@@ -47,6 +47,11 @@ func (s *Season) Update() error {
 	return result.Error
 }
 
+func (s *Season) Delete() error {
+	result := db.Delete(s)
+	return result.Error
+}
+
 func (s *Season) Validate() error {
 	if err := uuid.Validate(s.ID); err != nil {
 		return err

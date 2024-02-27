@@ -99,6 +99,24 @@ func postEditSeason(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/seasons", 302)
 }
 
+func deleteSeason(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+
+	season, err := model.FindSeasonByID(id)
+	if err != nil {
+		view.ShowErrorPage(w, err)
+		return
+	}
+
+	if err := season.Delete(); err != nil {
+		view.ShowErrorPage(w, err)
+		return
+	}
+
+	setFlash(w, "success", fmt.Sprintf("Successfully deleted season %s", season.Name))
+	http.Redirect(w, r, "/seasons", 302)
+}
+
 func parseSeason(r *http.Request, season *model.Season) {
 	if season == nil {
 		return
