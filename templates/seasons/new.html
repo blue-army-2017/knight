@@ -1,0 +1,12 @@
+{{- define "body" -}}
+<nav aria-label="breadcrumb">
+  <ul>
+    <li><a href="/seasons">Seasons</a></li>
+    <li>New</li>
+  </ul>
+</nav>
+
+<!-- Season Form -->
+{{ template "form" .Season }}
+<!-- -->
+{{- end -}}

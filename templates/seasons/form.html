@@ -1,0 +1,12 @@
+{{- define "form" -}}
+<form method="post">
+  <fieldset>
+    <label>
+      <span>Name</span>
+      <input type="text" name="name" value="{{ .Name }}" />
+    </label>
+  </fieldset>
+
+  <input type="submit" value="Save" />
+</form>
+{{- end -}}
