@@ -12,7 +12,7 @@ type ErrorPage struct {
 func (p *ErrorPage) Render(w io.Writer) {
 	page := pages["error"]
 
-	err := page.ExecuteTemplate(w, "page", p)
+	err := page.ExecuteTemplate(w, PAGE_TMPL, p)
 	if err != nil {
 		l.Error(err)
 	}

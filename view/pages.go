@@ -5,6 +5,8 @@ import (
 	"io"
 )
 
+const PAGE_TMPL = "page"
+
 type Page interface {
 	Render(w io.Writer)
 }
