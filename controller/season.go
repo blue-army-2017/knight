@@ -34,7 +34,8 @@ func postNewSeason(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	season := parseSeason(r)
+	var season model.Season
+	parseSeason(r, &season)
 
 	if err := season.Create(); err != nil {
 		page := view.SeasonsNewPage{
@@ -52,8 +53,56 @@ func postNewSeason(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/seasons", 302)
 }
 
-func parseSeason(r *http.Request) model.Season {
-	return model.Season{
-		Name: strings.TrimSpace(r.FormValue("name")),
+func editSeason(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+
+	season, err := model.FindSeasonByID(id)
+	if err != nil {
+		view.ShowErrorPage(w, err)
+		return
 	}
+
+	page := view.SeasonsEditPage{
+		Season: &season,
+	}
+	page.Render(w)
+}
+
+func postEditSeason(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	if err := r.ParseForm(); err != nil {
+		view.ShowErrorPage(w, err)
+		return
+	}
+
+	season, err := model.FindSeasonByID(id)
+	if err != nil {
+		view.ShowErrorPage(w, err)
+		return
+	}
+
+	parseSeason(r, &season)
+
+	if err := season.Update(); err != nil {
+		page := view.SeasonsEditPage{
+			Season: &season,
+			Flash: &view.Flash{
+				Type:    "error",
+				Message: err.Error(),
+			},
+		}
+		page.Render(w)
+		return
+	}
+
+	setFlash(w, "success", fmt.Sprintf("Successfully updated season %s", season.Name))
+	http.Redirect(w, r, "/seasons", 302)
+}
+
+func parseSeason(r *http.Request, season *model.Season) {
+	if season == nil {
+		return
+	}
+
+	season.Name = strings.TrimSpace(r.FormValue("name"))
 }

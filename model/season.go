@@ -22,6 +22,12 @@ func FindAllSeasons() (seasons []Season, err error) {
 	return
 }
 
+func FindSeasonByID(id string) (season Season, err error) {
+	result := db.Find(&season, "id = ?", id)
+	err = result.Error
+	return
+}
+
 func (s *Season) Create() error {
 	s.ID = uuid.NewString()
 	if err := s.Validate(); err != nil {
@@ -29,6 +35,15 @@ func (s *Season) Create() error {
 	}
 
 	result := db.Create(s)
+	return result.Error
+}
+
+func (s *Season) Update() error {
+	if err := s.Validate(); err != nil {
+		return err
+	}
+
+	result := db.Save(s)
 	return result.Error
 }
 

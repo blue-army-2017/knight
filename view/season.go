@@ -37,3 +37,17 @@ func (p *SeasonsNewPage) Render(w io.Writer) {
 		l.Error(err)
 	}
 }
+
+type SeasonsEditPage struct {
+	Season *model.Season
+	Flash  *Flash
+}
+
+func (p *SeasonsEditPage) Render(w io.Writer) {
+	page := pages["seasons_edit"]
+
+	err := page.ExecuteTemplate(w, "page", p)
+	if err != nil {
+		l.Error(err)
+	}
+}
