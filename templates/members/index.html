@@ -31,14 +31,18 @@
         </span>
       </td>
       <td>
-        <a href="/members/{{ .ID }}/edit" role="button" class="symbol">
+        <a
+          href="/members/{{ .ID }}/edit"
+          role="button"
+          class="symbol secondary"
+        >
           edit
         </a>
         <a
           href="/members/{{ .ID }}/delete"
           role="button"
           data-confirm="Are you sure you want to delete member {{ .FirstName }} {{ .LastName }}?"
-          class="symbol"
+          class="symbol contrast"
         >
           delete
         </a>
