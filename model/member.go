@@ -55,8 +55,8 @@ func (m *Member) Delete() error {
 }
 
 func (m *Member) Validate() error {
-	if err := uuid.Validate(m.ID); err != nil {
-		return err
+	if len(m.ID) < 5 {
+		return fmt.Errorf("ID must be at least 5 characters")
 	}
 
 	if len(m.FirstName) == 0 {

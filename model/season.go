@@ -53,12 +53,12 @@ func (s *Season) Delete() error {
 }
 
 func (s *Season) Validate() error {
-	if err := uuid.Validate(s.ID); err != nil {
-		return err
+	if len(s.ID) < 5 {
+		return fmt.Errorf("ID must be at least 5 characters")
 	}
 
 	if len(s.Name) < 3 {
-		return fmt.Errorf("Name must be at least 3 characters long")
+		return fmt.Errorf("Name must be at least 3 characters")
 	}
 
 	return nil
