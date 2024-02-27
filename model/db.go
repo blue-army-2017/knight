@@ -15,4 +15,6 @@ func init() {
 	}
 
 	db.AutoMigrate(&Member{})
+	db.AutoMigrate(&Season{})
+	db.AutoMigrate(&SeasonGame{})
 }
