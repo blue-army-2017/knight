@@ -11,6 +11,14 @@ type Season struct {
 	Games []SeasonGame
 }
 
+func FindAllSeasons() (seasons []Season, err error) {
+	result := db.
+		Order("created_at desc").
+		Find(&seasons)
+	err = result.Error
+	return
+}
+
 type SeasonGame struct {
 	gorm.Model
 	ID             string `gorm:"primaryKey"`

@@ -22,3 +22,9 @@ article.error {
   background-color: #d93526;
   color: white;
 }
+
+article > footer {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-around;
+}

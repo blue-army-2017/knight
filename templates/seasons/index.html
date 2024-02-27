@@ -1,0 +1,37 @@
+{{- define "body" -}}
+<nav aria-label="breadcrumb">
+  <ul>
+    <li>Seasons</li>
+  </ul>
+
+  <ul>
+    <li>
+      <a href="/seasons/new" role="button" class="symbol">add</a>
+    </li>
+  </ul>
+</nav>
+
+<section class="grid">
+  {{- range .Seasons -}}
+  <article>
+    <h3>{{ .Name }}</h3>
+    <footer>
+      <a href="/seasons/{{ .ID }}" role="button" class="symbol">
+        open_in_new
+      </a>
+      <a href="/seasons/{{ .ID }}/edit" role="button" class="symbol secondary">
+        edit
+      </a>
+      <a
+        href="/seasons/{{ .ID }}/delete"
+        role="button"
+        data-confirm="Are you sure you want to delete season {{ .Name }}?"
+        class="symbol contrast"
+      >
+        delete
+      </a>
+    </footer>
+  </article>
+  {{- end -}}
+</section>
+{{- end -}}
