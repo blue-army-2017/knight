@@ -63,14 +63,3 @@ func (s *Season) Validate() error {
 
 	return nil
 }
-
-type SeasonGame struct {
-	gorm.Model
-	ID             string `gorm:"primaryKey"`
-	Opponent       string
-	Home           bool
-	Mode           string
-	Date           string
-	SeasonID       uint
-	PresentMembers []Member `gorm:"many2many:presence;"`
-}
