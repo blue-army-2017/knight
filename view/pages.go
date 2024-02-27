@@ -22,6 +22,7 @@ func init() {
 	pages["members_edit"] = template.Must(template.ParseFiles("templates/members/form.html", "templates/members/edit.html", "templates/layout.html"))
 
 	pages["seasons"] = template.Must(template.ParseFiles("templates/seasons/index.html", "templates/layout.html"))
+	pages["seasons_show"] = template.Must(template.ParseFiles("templates/seasons/show.html", "templates/layout.html"))
 	pages["seasons_new"] = template.Must(template.ParseFiles("templates/seasons/form.html", "templates/seasons/new.html", "templates/layout.html"))
 	pages["seasons_edit"] = template.Must(template.ParseFiles("templates/seasons/form.html", "templates/seasons/edit.html", "templates/layout.html"))
 }

@@ -20,6 +20,20 @@ func (p *SeasonsPage) Render(w io.Writer) {
 	}
 }
 
+type SeasonsShowPage struct {
+	Season *model.Season
+	Flash  *Flash
+}
+
+func (p *SeasonsShowPage) Render(w io.Writer) {
+	page := pages["seasons_show"]
+
+	err := page.ExecuteTemplate(w, "page", p)
+	if err != nil {
+		l.Error(err)
+	}
+}
+
 type SeasonsNewPage struct {
 	Season *model.Season
 	Flash  *Flash

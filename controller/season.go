@@ -23,6 +23,21 @@ func getSeasons(w http.ResponseWriter, r *http.Request) {
 	page.Render(w)
 }
 
+func getSeason(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+
+	season, err := model.FindSeasonByID(id)
+	if err != nil {
+		view.ShowErrorPage(w, err)
+		return
+	}
+
+	page := view.SeasonsShowPage{
+		Season: &season,
+	}
+	page.Render(w)
+}
+
 func newSeason(w http.ResponseWriter, r *http.Request) {
 	page := view.SeasonsNewPage{}
 	page.Render(w)
