@@ -34,7 +34,8 @@ func postNewMember(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	member := parseMember(r)
+	var member model.Member
+	parseMember(r, &member)
 
 	if err := member.Create(); err != nil {
 		page := view.MembersNewPage{
@@ -74,8 +75,13 @@ func postEditMember(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	member := parseMember(r)
-	member.ID = id
+	member, err := model.FindMemberByID(id)
+	if err != nil {
+		view.ShowErrorPage(w, err)
+		return
+	}
+
+	parseMember(r, &member)
 
 	if err := member.Update(); err != nil {
 		page := view.MembersEditPage{
@@ -111,10 +117,12 @@ func deleteMember(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/members", 302)
 }
 
-func parseMember(r *http.Request) model.Member {
-	return model.Member{
-		FirstName: strings.TrimSpace(r.FormValue("first_name")),
-		LastName:  strings.TrimSpace(r.FormValue("last_name")),
-		Active:    r.FormValue("active") == "on",
+func parseMember(r *http.Request, member *model.Member) {
+	if member == nil {
+		return
 	}
+
+	member.FirstName = strings.TrimSpace(r.FormValue("first_name"))
+	member.LastName = strings.TrimSpace(r.FormValue("last_name"))
+	member.Active = r.FormValue("active") == "on"
 }
