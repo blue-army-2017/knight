@@ -28,3 +28,9 @@ article > footer {
   flex-flow: row;
   justify-content: space-around;
 }
+
+.space-between {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+}

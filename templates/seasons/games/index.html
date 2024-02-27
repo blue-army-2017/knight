@@ -1,0 +1,52 @@
+{{- define "body" -}}
+<nav aria-label="breadcrumb">
+  <ul>
+    <li><a href="/seasons">Seasons</a></li>
+    <li><a href="/seasons/{{ .SeasonID }}">{{ .SeasonID }}</a></li>
+    <li>Games</li>
+  </ul>
+</nav>
+
+<section>
+  <a href="/seasons/{{ .SeasonID }}/games/new" role="button">New Game</a>
+</section>
+
+<section class="grid">
+  {{- range .Games -}}
+  <article>
+    <h3>
+      <span>{{ if .Home }}vs.{{ else }}@{{ end }}</span>
+      <span>{{ .Opponent }}</span>
+    </h3>
+
+    <section class="space-between">
+      {{- if eq .Mode "regular" -}}
+      <span class="symbol">event</span>
+      {{- else if eq .Mode "playoffs" -}}
+      <span class="symbol">trophy</span>
+      {{- end -}}
+
+      <span>{{ .Date }}</span>
+    </section>
+
+    <footer>
+      <a
+        href="/seasons/{{ .SeasonID }}/games/{{ .ID }}/edit"
+        role="button"
+        class="symbol secondary"
+      >
+        edit
+      </a>
+      <a
+        href="/seasons/{{ .SeasonID }}/games/{{ .ID }}/delete"
+        role="button"
+        data-confirm="Are you sure you want to delete game {{ .Opponent }} ({{ .Date }})?"
+        class="symbol contrast"
+      >
+        delete
+      </a>
+    </footer>
+  </article>
+  {{- end -}}
+</section>
+{{- end -}}

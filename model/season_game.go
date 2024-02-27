@@ -20,7 +20,9 @@ type SeasonGame struct {
 }
 
 func FindAllSeasonGames(seasonId string) (games []SeasonGame, err error) {
-	result := db.Find(&games, "season_id = ?", seasonId)
+	result := db.
+		Order("date desc").
+		Find(&games, "season_id = ?", seasonId)
 	err = result.Error
 	return
 }

@@ -18,6 +18,7 @@ var routes = map[string]func(w http.ResponseWriter, r *http.Request){
 	"/seasons/{id}/edit":      editSeason,
 	"POST /seasons/{id}/edit": postEditSeason,
 	"/seasons/{id}/delete":    deleteSeason,
+	"/seasons/{s_id}/games":   getSeasonGames,
 }
 
 func GetRoutesMux() *http.ServeMux {
