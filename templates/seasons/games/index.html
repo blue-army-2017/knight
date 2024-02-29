@@ -2,13 +2,13 @@
 <nav aria-label="breadcrumb">
   <ul>
     <li><a href="/seasons">Seasons</a></li>
-    <li><a href="/seasons/{{ .SeasonID }}">{{ .SeasonID }}</a></li>
+    <li><a href="/seasons/{{ .Season.ID }}">{{ .Season.Name }}</a></li>
     <li>Games</li>
   </ul>
 </nav>
 
 <section>
-  <a href="/seasons/{{ .SeasonID }}/games/new" role="button">New Game</a>
+  <a href="/seasons/{{ .Season.ID }}/games/new" role="button">New Game</a>
 </section>
 
 <section class="grid">

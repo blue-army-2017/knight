@@ -11,6 +11,12 @@ import (
 func getSeasonGames(w http.ResponseWriter, r *http.Request) {
 	seasonId := r.PathValue("s_id")
 
+	season, err := model.FindSeasonByID(seasonId)
+	if err != nil {
+		view.ShowErrorPage(w, err)
+		return
+	}
+
 	games, err := model.FindAllSeasonGames(seasonId)
 	if err != nil {
 		view.ShowErrorPage(w, err)
@@ -18,9 +24,9 @@ func getSeasonGames(w http.ResponseWriter, r *http.Request) {
 	}
 
 	page := view.SeasonGamesPage{
-		SeasonID: seasonId,
-		Games:    games,
-		Flash:    getFlash(w, r),
+		Season: &season,
+		Games:  games,
+		Flash:  getFlash(w, r),
 	}
 	page.Render(w)
 }

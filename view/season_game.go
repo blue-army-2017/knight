@@ -8,9 +8,9 @@ import (
 )
 
 type SeasonGamesPage struct {
-	SeasonID string
-	Games    []model.SeasonGame
-	Flash    *Flash
+	Season *model.Season
+	Games  []model.SeasonGame
+	Flash  *Flash
 }
 
 func (p *SeasonGamesPage) Render(w io.Writer) {
