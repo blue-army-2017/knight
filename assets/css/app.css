@@ -29,6 +29,10 @@ article > footer {
   justify-content: space-around;
 }
 
+.card-box {
+  display: grid;
+}
+
 .space-between {
   display: flex;
   flex-flow: row;
