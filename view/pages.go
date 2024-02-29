@@ -29,4 +29,5 @@ func init() {
 	pages["seasons_edit"] = template.Must(template.ParseFiles("templates/seasons/form.html", "templates/seasons/edit.html", "templates/layout.html"))
 
 	pages["season_games"] = template.Must(template.ParseFiles("templates/seasons/games/index.html", "templates/layout.html"))
+	pages["season_games_new"] = template.Must(template.ParseFiles("templates/seasons/games/form.html", "templates/seasons/games/new.html", "templates/layout.html"))
 }

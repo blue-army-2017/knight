@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/blue-army-2017/knight/model"
@@ -19,6 +20,88 @@ func getSeasonGames(w http.ResponseWriter, r *http.Request) {
 	page := view.SeasonGamesPage{
 		SeasonID: seasonId,
 		Games:    games,
+		Flash:    getFlash(w, r),
 	}
 	page.Render(w)
+}
+
+func newSeasonGame(w http.ResponseWriter, r *http.Request) {
+	seasonId := r.PathValue("s_id")
+
+	season, err := model.FindSeasonByID(seasonId)
+	if err != nil {
+		view.ShowErrorPage(w, err)
+		return
+	}
+
+	members, err := model.FindAllMembers()
+	if err != nil {
+		view.ShowErrorPage(w, err)
+		return
+	}
+
+	page := view.SeasonGamesNewPage{
+		Season:  &season,
+		Members: members,
+	}
+	page.Render(w)
+}
+
+func postNewSeasonGame(w http.ResponseWriter, r *http.Request) {
+	seasonId := r.PathValue("s_id")
+	if err := r.ParseForm(); err != nil {
+		view.ShowErrorPage(w, err)
+		return
+	}
+
+	season, err := model.FindSeasonByID(seasonId)
+	if err != nil {
+		view.ShowErrorPage(w, err)
+		return
+	}
+
+	members, err := model.FindAllMembers()
+	if err != nil {
+		view.ShowErrorPage(w, err)
+		return
+	}
+
+	game := model.SeasonGame{
+		SeasonID: seasonId,
+	}
+	parseSeasonGame(r, &game, members)
+
+	if err := game.Create(); err != nil {
+		page := view.SeasonGamesNewPage{
+			Season:  &season,
+			Game:    &game,
+			Members: members,
+			Flash: &view.Flash{
+				Type:    "error",
+				Message: err.Error(),
+			},
+		}
+		page.Render(w)
+		return
+	}
+
+	setFlash(w, "success", fmt.Sprintf("Successfully created game %s (%s)", game.Opponent, game.Date))
+	http.Redirect(w, r, fmt.Sprintf("/seasons/%s/games", seasonId), 302)
+}
+
+func parseSeasonGame(r *http.Request, game *model.SeasonGame, members []model.Member) {
+	if game == nil {
+		return
+	}
+
+	game.Opponent = r.FormValue("opponent")
+	game.Home = r.FormValue("home") == "on"
+	game.Date = r.FormValue("date")
+	game.Mode = r.FormValue("mode")
+
+	for _, member := range members {
+		if r.FormValue(member.ID) == "on" {
+			game.PresentMembers = append(game.PresentMembers, member)
+		}
+	}
 }

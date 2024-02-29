@@ -1,0 +1,56 @@
+{{- define "form" -}}
+<form method="post">
+  {{- with .Game -}}
+  <fieldset>
+    <label>
+      <span>Opponent</span>
+      <input type="text" name="opponent" value="{{ .Opponent }}" />
+    </label>
+
+    <label>
+      {{- if .Home -}}
+      <input type="checkbox" name="home" role="switch" checked />
+      {{- else -}}
+      <input type="checkbox" name="home" role="switch" />
+      {{- end -}}
+      <span>Home</span>
+    </label>
+
+    <label>
+      <span>Date</span>
+      <input type="date" name="date" aria-label="Date" value="{{ .Date }}" />
+    </label>
+
+    <legend>Mode</legend>
+    <label>
+      {{- if or (eq .Mode "") (eq .Mode "regular") }}
+      <input type="radio" name="mode" value="regular" checked />
+      {{- else -}}
+      <input type="radio" name="mode" value="regular" />
+      {{- end -}}
+      <span>Regular</span>
+    </label>
+    <label>
+      {{- if eq .Mode "playoffs" -}}
+      <input type="radio" name="mode" value="playoffs" checked />
+      {{- else -}}
+      <input type="radio" name="mode" value="playoffs" />
+      {{- end -}}
+      <span>Playoffs</span>
+    </label>
+  </fieldset>
+  {{- end -}}
+
+  <fieldset>
+    <legend>Present Members</legend>
+    {{- range .Members -}}
+    <label>
+      <input type="checkbox" name="{{ .ID }}" />
+      <span>{{ .FirstName }} {{ .LastName }}</span>
+    </label>
+    {{- end -}}
+  </fieldset>
+
+  <input type="submit" value="Save" />
+</form>
+{{- end -}}
