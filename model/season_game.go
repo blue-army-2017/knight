@@ -21,6 +21,8 @@ type SeasonGame struct {
 
 func FindAllSeasonGames(seasonId string) (games []SeasonGame, err error) {
 	result := db.
+		Model(&SeasonGame{}).
+		Preload("PresentMembers").
 		Order("date desc").
 		Find(&games, "season_id = ?", seasonId)
 	err = result.Error
@@ -28,7 +30,10 @@ func FindAllSeasonGames(seasonId string) (games []SeasonGame, err error) {
 }
 
 func FindSeasonGameByID(id string) (game SeasonGame, err error) {
-	result := db.Find(&game, "id = ?", id)
+	result := db.
+		Model(&SeasonGame{}).
+		Preload("PresentMembers").
+		Find(&game, "id = ?", id)
 	err = result.Error
 	return
 }
@@ -49,10 +54,22 @@ func (g *SeasonGame) Update() error {
 	}
 
 	result := db.Save(g)
-	return result.Error
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return db.
+		Model(g).
+		Association("PresentMembers").
+		Replace(g.PresentMembers)
 }
 
 func (g *SeasonGame) Delete() error {
+	err := db.Model(g).Association("PresentMembers").Clear()
+	if err != nil {
+		return err
+	}
+
 	result := db.Delete(g)
 	return result.Error
 }

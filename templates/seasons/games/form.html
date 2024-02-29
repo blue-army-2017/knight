@@ -45,7 +45,11 @@
     <legend>Present Members</legend>
     {{- range .Members -}}
     <label>
+      {{- if $.IsMemberPresent .ID -}}
+      <input type="checkbox" name="{{ .ID }}" checked />
+      {{- else -}}
       <input type="checkbox" name="{{ .ID }}" />
+      {{- end -}}
       <span>{{ .FirstName }} {{ .LastName }}</span>
     </label>
     {{- end -}}

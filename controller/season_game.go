@@ -95,6 +95,82 @@ func postNewSeasonGame(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, fmt.Sprintf("/seasons/%s/games", seasonId), 302)
 }
 
+func editSeasonGame(w http.ResponseWriter, r *http.Request) {
+	seasonId := r.PathValue("s_id")
+	id := r.PathValue("id")
+
+	season, err := model.FindSeasonByID(seasonId)
+	if err != nil {
+		view.ShowErrorPage(w, err)
+		return
+	}
+
+	game, err := model.FindSeasonGameByID(id)
+	if err != nil {
+		view.ShowErrorPage(w, err)
+		return
+	}
+
+	members, err := model.FindAllMembers()
+	if err != nil {
+		view.ShowErrorPage(w, err)
+		return
+	}
+
+	page := view.SeasonGamesEditPage{
+		Season:  &season,
+		Game:    &game,
+		Members: members,
+	}
+	page.Render(w)
+}
+
+func postEditSeasonGame(w http.ResponseWriter, r *http.Request) {
+	seasonId := r.PathValue("s_id")
+	id := r.PathValue("id")
+	if err := r.ParseForm(); err != nil {
+		view.ShowErrorPage(w, err)
+		return
+	}
+
+	season, err := model.FindSeasonByID(seasonId)
+	if err != nil {
+		view.ShowErrorPage(w, err)
+		return
+	}
+
+	game, err := model.FindSeasonGameByID(id)
+	if err != nil {
+		view.ShowErrorPage(w, err)
+		return
+	}
+
+	members, err := model.FindAllMembers()
+	if err != nil {
+		view.ShowErrorPage(w, err)
+		return
+	}
+
+	parseSeasonGame(r, &game, members)
+
+	if err := game.Update(); err != nil {
+		page := view.SeasonGamesEditPage{
+			Season:  &season,
+			Game:    &game,
+			Members: members,
+			Flash: &view.Flash{
+				Type:    "error",
+				Message: err.Error(),
+			},
+		}
+		page.Render(w)
+		return
+	}
+
+	setFlash(w, "success", fmt.Sprintf("Successfully updated game %s (%s)", game.Opponent, game.Date))
+	http.Redirect(w, r, fmt.Sprintf("/seasons/%s/games", seasonId), 302)
+}
+
 func parseSeasonGame(r *http.Request, game *model.SeasonGame, members []model.Member) {
 	if game == nil {
 		return
@@ -105,9 +181,11 @@ func parseSeasonGame(r *http.Request, game *model.SeasonGame, members []model.Me
 	game.Date = r.FormValue("date")
 	game.Mode = r.FormValue("mode")
 
+	presentMembers := []model.Member{}
 	for _, member := range members {
 		if r.FormValue(member.ID) == "on" {
-			game.PresentMembers = append(game.PresentMembers, member)
+			presentMembers = append(presentMembers, member)
 		}
 	}
+	game.PresentMembers = presentMembers
 }

@@ -1,0 +1,14 @@
+{{- define "body" -}}
+<nav aria-label="breadcrumb">
+  <ul>
+    <li><a href="/seasons">Seasons</a></li>
+    <li><a href="/seasons/{{ .Season.ID }}">{{ .Season.Name }}</a></li>
+    <li><a href="/seasons/{{ .Season.ID }}/games">Games</a></li>
+    <li>Edit</li>
+  </ul>
+</nav>
+
+<!-- Game Form -->
+{{ template "form" . }}
+<!-- -->
+{{- end -}}
