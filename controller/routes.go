@@ -1,6 +1,10 @@
 package controller
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/blue-army-2017/knight/util"
+)
 
 var routes = map[string]func(w http.ResponseWriter, r *http.Request){
 	"/health":                              getHealth,
@@ -32,8 +36,12 @@ func GetRoutesMux() *http.ServeMux {
 	mux.Handle("/static/", assetsHandler())
 
 	for route, handler := range routes {
-		handleFunc := logMiddleware(handler)
-		mux.HandleFunc(route, handleFunc)
+		if util.Config.Environment == "development" {
+			handleFunc := logMiddleware(handler)
+			mux.HandleFunc(route, handleFunc)
+		} else {
+			mux.HandleFunc(route, handler)
+		}
 	}
 
 	return mux

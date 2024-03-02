@@ -1,12 +1,15 @@
 package util
 
 import (
+	"fmt"
 	"os"
 	"reflect"
 )
 
 type ServerConfig struct {
-	Port string `name:"PORT" default:"8080"`
+	Environment string `name:"ENVIRONMENT" default:"production"`
+	Port        string `name:"PORT" default:"8080"`
+	DB          string `name:"DB"`
 }
 
 var Config *ServerConfig
@@ -25,6 +28,10 @@ func init() {
 		value, exists := os.LookupEnv(name)
 		if !exists && len(defaultValue) > 0 {
 			value = defaultValue
+		}
+
+		if value == "" {
+			panic(fmt.Sprintf("Configuration for %s is missing", name))
 		}
 
 		v.Elem().
