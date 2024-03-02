@@ -1,0 +1,36 @@
+{{- define "body" -}}
+<nav aria-label="breadcrumb">
+  <ul>
+    <li><a href="/seasons">Seasons</a></li>
+    <li><a href="/seasons/{{ .Season.ID }}">{{ .Season.Name }}</a></li>
+    <li>Presence</li>
+  </ul>
+</nav>
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Home</th>
+      <th scope="col">Away</th>
+      <th scope="col">Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{- range .Statistic -}}
+    <!-- Ignore members with no games -->
+    {{- if gt .TotalGames 0 -}}
+    <tr>
+      <th scope="col">{{ .Position }}</th>
+      <td>{{ .Member.FirstName }} {{ .Member.LastName }}</td>
+      <td>{{ .HomeGames }}</td>
+      <td>{{ .AwayGames }}</td>
+      <td>{{ .TotalGames }}</td>
+    </tr>
+    {{- end -}}
+    <!---->
+    {{- end -}}
+  </tbody>
+</table>
+{{- end -}}
