@@ -171,6 +171,25 @@ func postEditSeasonGame(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, fmt.Sprintf("/seasons/%s/games", seasonId), 302)
 }
 
+func deleteSeasonGame(w http.ResponseWriter, r *http.Request) {
+	seasonId := r.PathValue("s_id")
+	id := r.PathValue("id")
+
+	game, err := model.FindSeasonGameByID(id)
+	if err != nil {
+		view.ShowErrorPage(w, err)
+		return
+	}
+
+	if err := game.Delete(); err != nil {
+		view.ShowErrorPage(w, err)
+		return
+	}
+
+	setFlash(w, "success", fmt.Sprintf("Successfully deleted game %s (%s)", game.Opponent, game.Date))
+	http.Redirect(w, r, fmt.Sprintf("/seasons/%s/games", seasonId), 302)
+}
+
 func parseSeasonGame(r *http.Request, game *model.SeasonGame, members []model.Member) {
 	if game == nil {
 		return
