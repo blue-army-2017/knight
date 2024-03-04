@@ -1,0 +1,7 @@
+.git/
+.github/
+.task/
+data/
+.env
+.gitignore
+*.db
