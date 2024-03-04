@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PICO_VERSION="2.0.3"
+PICO_VERSION="2.0.6"
 
 mkdir -p assets/css
 # pico.css
