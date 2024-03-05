@@ -1,16 +1,13 @@
 package view
 
 import (
-	"io"
+	"html/template"
 )
 
-type HomePage struct{}
+type HomePage struct {
+	Flash *Flash
+}
 
-func (p *HomePage) Render(w io.Writer) {
-	page := pages["home"]
-
-	err := page.ExecuteTemplate(w, PAGE_TMPL, nil)
-	if err != nil {
-		l.Error(err)
-	}
+func (p *HomePage) Template() *template.Template {
+	return pages["home"]
 }

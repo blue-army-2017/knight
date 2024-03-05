@@ -1,7 +1,7 @@
 package view
 
 import (
-	"io"
+	"html/template"
 
 	"github.com/blue-army-2017/knight/model"
 )
@@ -11,13 +11,8 @@ type MembersPage struct {
 	Flash   *Flash
 }
 
-func (p *MembersPage) Render(w io.Writer) {
-	page := pages["members"]
-
-	err := page.ExecuteTemplate(w, PAGE_TMPL, p)
-	if err != nil {
-		l.Error(err)
-	}
+func (p *MembersPage) Template() *template.Template {
+	return pages["members"]
 }
 
 type MembersNewPage struct {
@@ -25,19 +20,8 @@ type MembersNewPage struct {
 	Flash  *Flash
 }
 
-func (p *MembersNewPage) Render(w io.Writer) {
-	page := pages["members_new"]
-
-	if p.Member == nil {
-		p.Member = &model.Member{
-			Active: true,
-		}
-	}
-
-	err := page.ExecuteTemplate(w, PAGE_TMPL, p)
-	if err != nil {
-		l.Error(err)
-	}
+func (p *MembersNewPage) Template() *template.Template {
+	return pages["members_new"]
 }
 
 type MembersEditPage struct {
@@ -45,11 +29,6 @@ type MembersEditPage struct {
 	Flash  *Flash
 }
 
-func (p *MembersEditPage) Render(w io.Writer) {
-	page := pages["members_edit"]
-
-	err := page.ExecuteTemplate(w, PAGE_TMPL, p)
-	if err != nil {
-		l.Error(err)
-	}
+func (p *MembersEditPage) Template() *template.Template {
+	return pages["members_edit"]
 }

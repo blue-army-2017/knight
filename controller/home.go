@@ -8,5 +8,5 @@ import (
 
 func getHome(w http.ResponseWriter, r *http.Request) {
 	page := view.HomePage{}
-	page.Render(w)
+	view.RenderPage(w, &page)
 }

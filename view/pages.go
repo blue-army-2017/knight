@@ -8,7 +8,7 @@ import (
 const PAGE_TMPL = "page"
 
 type Page interface {
-	Render(w io.Writer)
+	Template() *template.Template
 }
 
 var pages map[string]*template.Template
@@ -33,4 +33,12 @@ func init() {
 	pages["season_games_edit"] = template.Must(template.ParseFiles("templates/seasons/games/form.html", "templates/seasons/games/edit.html", "templates/layout.html"))
 
 	pages["season_presence"] = template.Must(template.ParseFiles("templates/seasons/presence/index.html", "templates/layout.html"))
+}
+
+func RenderPage(w io.Writer, p Page) {
+	tpl := p.Template()
+
+	if err := tpl.ExecuteTemplate(w, PAGE_TMPL, p); err != nil {
+		l.Errorln(err)
+	}
 }

@@ -2,7 +2,7 @@ package view
 
 import (
 	"fmt"
-	"io"
+	"html/template"
 	"sort"
 
 	"github.com/blue-army-2017/knight/model"
@@ -26,13 +26,8 @@ type SeasonPresencePage struct {
 	Flash   *Flash
 }
 
-func (p *SeasonPresencePage) Render(w io.Writer) {
-	page := pages["season_presence"]
-
-	err := page.ExecuteTemplate(w, PAGE_TMPL, p)
-	if err != nil {
-		l.Error(err)
-	}
+func (p *SeasonPresencePage) Template() *template.Template {
+	return pages["season_presence"]
 }
 
 func (p *SeasonPresencePage) Statistic() []SeasonPresence {

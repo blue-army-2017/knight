@@ -1,7 +1,7 @@
 package view
 
 import (
-	"io"
+	"html/template"
 
 	"github.com/blue-army-2017/knight/model"
 )
@@ -11,13 +11,8 @@ type SeasonsPage struct {
 	Flash   *Flash
 }
 
-func (p *SeasonsPage) Render(w io.Writer) {
-	page := pages["seasons"]
-
-	err := page.ExecuteTemplate(w, PAGE_TMPL, p)
-	if err != nil {
-		l.Error(err)
-	}
+func (p *SeasonsPage) Template() *template.Template {
+	return pages["seasons"]
 }
 
 type SeasonsShowPage struct {
@@ -25,13 +20,8 @@ type SeasonsShowPage struct {
 	Flash  *Flash
 }
 
-func (p *SeasonsShowPage) Render(w io.Writer) {
-	page := pages["seasons_show"]
-
-	err := page.ExecuteTemplate(w, PAGE_TMPL, p)
-	if err != nil {
-		l.Error(err)
-	}
+func (p *SeasonsShowPage) Template() *template.Template {
+	return pages["seasons_show"]
 }
 
 type SeasonsNewPage struct {
@@ -39,17 +29,8 @@ type SeasonsNewPage struct {
 	Flash  *Flash
 }
 
-func (p *SeasonsNewPage) Render(w io.Writer) {
-	page := pages["seasons_new"]
-
-	if p.Season == nil {
-		p.Season = &model.Season{}
-	}
-
-	err := page.ExecuteTemplate(w, PAGE_TMPL, p)
-	if err != nil {
-		l.Error(err)
-	}
+func (p *SeasonsNewPage) Template() *template.Template {
+	return pages["seasons_new"]
 }
 
 type SeasonsEditPage struct {
@@ -57,11 +38,6 @@ type SeasonsEditPage struct {
 	Flash  *Flash
 }
 
-func (p *SeasonsEditPage) Render(w io.Writer) {
-	page := pages["seasons_edit"]
-
-	err := page.ExecuteTemplate(w, PAGE_TMPL, p)
-	if err != nil {
-		l.Error(err)
-	}
+func (p *SeasonsEditPage) Template() *template.Template {
+	return pages["seasons_edit"]
 }

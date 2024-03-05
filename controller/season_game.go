@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/blue-army-2017/knight/model"
 	"github.com/blue-army-2017/knight/view"
@@ -28,7 +29,7 @@ func getSeasonGames(w http.ResponseWriter, r *http.Request) {
 		Games:  games,
 		Flash:  getFlash(w, r),
 	}
-	page.Render(w)
+	view.RenderPage(w, &page)
 }
 
 func newSeasonGame(w http.ResponseWriter, r *http.Request) {
@@ -47,10 +48,14 @@ func newSeasonGame(w http.ResponseWriter, r *http.Request) {
 	}
 
 	page := view.SeasonGamesNewPage{
-		Season:  &season,
+		Season: &season,
+		Game: &model.SeasonGame{
+			Home: true,
+			Date: time.Now().Format("2006-01-02"),
+		},
 		Members: members,
 	}
-	page.Render(w)
+	view.RenderPage(w, &page)
 }
 
 func postNewSeasonGame(w http.ResponseWriter, r *http.Request) {
@@ -87,7 +92,7 @@ func postNewSeasonGame(w http.ResponseWriter, r *http.Request) {
 				Message: err.Error(),
 			},
 		}
-		page.Render(w)
+		view.RenderPage(w, &page)
 		return
 	}
 
@@ -122,7 +127,7 @@ func editSeasonGame(w http.ResponseWriter, r *http.Request) {
 		Game:    &game,
 		Members: members,
 	}
-	page.Render(w)
+	view.RenderPage(w, &page)
 }
 
 func postEditSeasonGame(w http.ResponseWriter, r *http.Request) {
@@ -163,7 +168,7 @@ func postEditSeasonGame(w http.ResponseWriter, r *http.Request) {
 				Message: err.Error(),
 			},
 		}
-		page.Render(w)
+		view.RenderPage(w, &page)
 		return
 	}
 

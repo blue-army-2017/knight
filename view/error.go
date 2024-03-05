@@ -1,6 +1,7 @@
 package view
 
 import (
+	"html/template"
 	"io"
 )
 
@@ -9,18 +10,13 @@ type ErrorPage struct {
 	Flash *Flash
 }
 
-func (p *ErrorPage) Render(w io.Writer) {
-	page := pages["error"]
-
-	err := page.ExecuteTemplate(w, PAGE_TMPL, p)
-	if err != nil {
-		l.Error(err)
-	}
+func (p *ErrorPage) Template() *template.Template {
+	return pages["error"]
 }
 
 func ShowErrorPage(w io.Writer, err error) {
 	page := ErrorPage{
 		Error: err,
 	}
-	page.Render(w)
+	RenderPage(w, &page)
 }

@@ -20,12 +20,16 @@ func getMembers(w http.ResponseWriter, r *http.Request) {
 		Members: members,
 		Flash:   getFlash(w, r),
 	}
-	page.Render(w)
+	view.RenderPage(w, &page)
 }
 
 func newMember(w http.ResponseWriter, r *http.Request) {
-	page := view.MembersNewPage{}
-	page.Render(w)
+	page := view.MembersNewPage{
+		Member: &model.Member{
+			Active: true,
+		},
+	}
+	view.RenderPage(w, &page)
 }
 
 func postNewMember(w http.ResponseWriter, r *http.Request) {
@@ -45,7 +49,7 @@ func postNewMember(w http.ResponseWriter, r *http.Request) {
 				Message: err.Error(),
 			},
 		}
-		page.Render(w)
+		view.RenderPage(w, &page)
 		return
 	}
 
@@ -65,7 +69,7 @@ func editMember(w http.ResponseWriter, r *http.Request) {
 	page := view.MembersEditPage{
 		Member: &member,
 	}
-	page.Render(w)
+	view.RenderPage(w, &page)
 }
 
 func postEditMember(w http.ResponseWriter, r *http.Request) {
@@ -91,7 +95,7 @@ func postEditMember(w http.ResponseWriter, r *http.Request) {
 				Message: err.Error(),
 			},
 		}
-		page.Render(w)
+		view.RenderPage(w, &page)
 		return
 	}
 

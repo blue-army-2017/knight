@@ -20,7 +20,7 @@ func getSeasons(w http.ResponseWriter, r *http.Request) {
 		Seasons: seasons,
 		Flash:   getFlash(w, r),
 	}
-	page.Render(w)
+	view.RenderPage(w, &page)
 }
 
 func getSeason(w http.ResponseWriter, r *http.Request) {
@@ -35,12 +35,14 @@ func getSeason(w http.ResponseWriter, r *http.Request) {
 	page := view.SeasonsShowPage{
 		Season: &season,
 	}
-	page.Render(w)
+	view.RenderPage(w, &page)
 }
 
 func newSeason(w http.ResponseWriter, r *http.Request) {
-	page := view.SeasonsNewPage{}
-	page.Render(w)
+	page := view.SeasonsNewPage{
+		Season: &model.Season{},
+	}
+	view.RenderPage(w, &page)
 }
 
 func postNewSeason(w http.ResponseWriter, r *http.Request) {
@@ -60,7 +62,7 @@ func postNewSeason(w http.ResponseWriter, r *http.Request) {
 				Message: err.Error(),
 			},
 		}
-		page.Render(w)
+		view.RenderPage(w, &page)
 		return
 	}
 
@@ -80,7 +82,7 @@ func editSeason(w http.ResponseWriter, r *http.Request) {
 	page := view.SeasonsEditPage{
 		Season: &season,
 	}
-	page.Render(w)
+	view.RenderPage(w, &page)
 }
 
 func postEditSeason(w http.ResponseWriter, r *http.Request) {
@@ -106,7 +108,7 @@ func postEditSeason(w http.ResponseWriter, r *http.Request) {
 				Message: err.Error(),
 			},
 		}
-		page.Render(w)
+		view.RenderPage(w, &page)
 		return
 	}
 

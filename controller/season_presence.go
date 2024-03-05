@@ -33,5 +33,5 @@ func getSeasonPresence(w http.ResponseWriter, r *http.Request) {
 		Games:   games,
 		Members: members,
 	}
-	page.Render(w)
+	view.RenderPage(w, &page)
 }
