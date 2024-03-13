@@ -15,7 +15,10 @@ func init() {
 }
 
 func main() {
-	mux := controller.GetRoutesMux()
+	mux, err := controller.GetRoutesMux()
+	if err != nil {
+		l.Fatal(err)
+	}
 
 	l.Infof("server has started on port %s", util.Config.Port)
 	if err := http.ListenAndServe(":"+util.Config.Port, mux); err != nil {

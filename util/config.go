@@ -8,8 +8,12 @@ import (
 
 type ServerConfig struct {
 	Environment string `name:"ENVIRONMENT" default:"production"`
+	Host        string `name:"HOST" default:"http://localhost"`
 	Port        string `name:"PORT" default:"8080"`
 	DB          string `name:"DB"`
+	AuthDomain  string `name:"AUTH_DOMAIN"`
+	AuthKey     string `name:"AUTH_KEY"`
+	ClientID    string `name:"CLIENT_ID"`
 }
 
 var Config *ServerConfig

@@ -1,9 +1,14 @@
 package controller
 
 import (
+	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/blue-army-2017/knight/util"
+	"github.com/zitadel/zitadel-go/v3/pkg/authentication"
+	openid "github.com/zitadel/zitadel-go/v3/pkg/authentication/oidc"
+	"github.com/zitadel/zitadel-go/v3/pkg/zitadel"
 )
 
 var routes = map[string]func(w http.ResponseWriter, r *http.Request){
@@ -31,21 +36,36 @@ var routes = map[string]func(w http.ResponseWriter, r *http.Request){
 	"/seasons/{s_id}/presence":             getSeasonPresence,
 }
 
-func GetRoutesMux() *http.ServeMux {
+func GetRoutesMux() (*http.ServeMux, error) {
+	authRedirect := fmt.Sprintf("%s/auth/callback", util.GetServerUri())
+	authN, err := authentication.New(
+		context.Background(),
+		zitadel.New(util.Config.AuthDomain),
+		util.Config.AuthKey,
+		openid.DefaultAuthentication(util.Config.ClientID, authRedirect, util.Config.AuthKey),
+	)
+	if err != nil {
+		return nil, err
+	}
+	authMw := authentication.Middleware(authN)
+
 	mux := http.NewServeMux()
+
+	mux.Handle("/auth/", authN)
 
 	mux.Handle("/static/", assetsHandler())
 
-	for route, handler := range routes {
+	for route, fn := range routes {
+		handleFunc := fn
 		if util.Config.Environment == "development" {
-			handleFunc := logMiddleware(handler)
-			mux.HandleFunc(route, handleFunc)
-		} else {
-			mux.HandleFunc(route, handler)
+			handleFunc = logMiddleware(fn)
 		}
+
+		handler := authMw.RequireAuthentication()(http.HandlerFunc(handleFunc))
+		mux.Handle(route, handler)
 	}
 
-	return mux
+	return mux, nil
 }
 
 func assetsHandler() http.Handler {
