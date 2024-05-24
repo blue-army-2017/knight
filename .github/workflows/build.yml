@@ -26,7 +26,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: node_modules
-          key: ${{ runners.os }}-node-${{ hashFiles('bun.lockb') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('bun.lockb') }}
       - name: Install
         run: bun install --frozen-lockfile
       - name: Check
@@ -50,7 +50,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: node_modules
-          key: ${{ runners.os }}-node-${{ hashFiles('bun.lockb') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('bun.lockb') }}
       - name: Install
         run: bun install --frozen-lockfile
       - name: Build
