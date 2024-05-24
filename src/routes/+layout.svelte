@@ -18,4 +18,7 @@
     <LightSwitch />
   </svelte:fragment>
 </AppBar>
-<slot />
+
+<main class="container h-full flex flex-col justify-center items-center">
+  <slot />
+</main>

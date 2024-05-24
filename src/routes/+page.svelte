@@ -1,15 +1,9 @@
-<!-- YOU CAN DELETE EVERYTHING IN THIS PAGE -->
+<a class="block card card-hover m-4" href="/members">
+  <header class="card-header font-bold">Members</header>
+  <section class="p-4">Manage the members of the Blue Army.</section>
+</a>
 
-<div class="container h-full mx-auto flex justify-center items-center">
-  <div class="space-y-5">
-    <h1 class="h1">Let's get cracking bones!</h1>
-    <p>Start by exploring:</p>
-    <ul>
-      <li><code class="code">/src/routes/+layout.svelte</code> - barebones layout</li>
-      <li><code class="code">/src/app.postcss</code> - app wide css</li>
-      <li>
-        <code class="code">/src/routes/+page.svelte</code> - this page, you can replace the contents
-      </li>
-    </ul>
-  </div>
-</div>
+<a class="block card card-hover m-4" href="/seasons">
+  <header class="card-header font-bold">Seasons</header>
+  <section class="p-4">Manage seasons and see presence of members at games.</section>
+</a>
