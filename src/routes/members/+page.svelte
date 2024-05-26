@@ -21,7 +21,15 @@
         <tr>
           <td>{member.lastName}</td>
           <td>{member.firstName}</td>
-          <td>{member.active ? "yes" : "no"}</td>
+          {#if member.active}
+            <td>
+              <span class="badge variant-filled-primary">Active</span>
+            </td>
+          {:else}
+            <td>
+              <span class="badge variant-filled-tertiary">Inactive</span>
+            </td>
+          {/if}
           <td class="table-cell-fit">
             <div class="btn-group">
               <button class="variant-filled-secondary">Edit</button>
@@ -34,4 +42,4 @@
   </table>
 </div>
 
-<button class="btn variant-filled-primary m-4">New Member</button>
+<a href="/members/new" class="btn variant-filled-primary m-4">New Member</a>
