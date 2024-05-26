@@ -8,6 +8,13 @@
       "when": 1716744110051,
       "tag": "0000_flawless_swordsman",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1716746730374,
+      "tag": "0001_brave_sabra",
+      "breakpoints": true
     }
   ]
 }
