@@ -14,3 +14,6 @@ yarn.lock
 
 # Ignore drizzle generated files
 drizzle/
+
+# Ignore data migration stuff
+data/
