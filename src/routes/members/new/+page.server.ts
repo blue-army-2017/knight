@@ -1,9 +1,9 @@
 import type { Actions } from "./$types";
 import * as schema from "$lib/schema";
-import { redirect } from "@sveltejs/kit";
+import { fail, redirect } from "@sveltejs/kit";
 
-export const actions = {
-  default: async ({ request, locals: { db } }) => {
+export const actions: Actions = {
+  save: async ({ request, locals: { db } }) => {
     const data = await request.formData();
 
     const firstName = data.get("first_name");
@@ -11,7 +11,7 @@ export const actions = {
     const active = data.has("active");
 
     if (!firstName || !lastName) {
-      return { error: "first and last name must be set" };
+      return fail(400, { error: "first and last name must be set" });
     }
 
     await db.insert(schema.members).values({
@@ -23,4 +23,4 @@ export const actions = {
 
     redirect(302, "/members");
   },
-} satisfies Actions;
+};

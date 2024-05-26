@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { PageData } from "./$types";
+  import { goto } from "$app/navigation";
 
   export let data: PageData;
 </script>
@@ -13,29 +14,22 @@
         <th>Last Name</th>
         <th>First Name</th>
         <th>Active</th>
-        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
       {#each data.members as member}
-        <tr>
+        <tr class="hover:cursor-pointer" on:click={() => goto(`/members/${member.id}`)}>
           <td>{member.lastName}</td>
           <td>{member.firstName}</td>
           {#if member.active}
             <td>
-              <span class="badge variant-filled-primary">Active</span>
+              <span class="badge variant-filled-success">Active</span>
             </td>
           {:else}
             <td>
-              <span class="badge variant-filled-tertiary">Inactive</span>
+              <span class="badge variant-filled-error">Inactive</span>
             </td>
           {/if}
-          <td class="table-cell-fit">
-            <div class="btn-group">
-              <button class="variant-filled-secondary">Edit</button>
-              <button class="variant-filled-error">Delete</button>
-            </div>
-          </td>
         </tr>
       {/each}
     </tbody>
