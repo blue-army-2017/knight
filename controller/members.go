@@ -1,8 +1,6 @@
 package controller
 
 import (
-	"net/http"
-
 	"github.com/blue-army-2017/knight/model"
 	"github.com/gin-gonic/gin"
 )
@@ -28,8 +26,7 @@ func (c *DefaultMemberController) Show() (*Page, error) {
 	}
 
 	return &Page{
-		StatusCode: http.StatusOK,
-		Template:   "pages/members",
+		Template: "pages/members",
 		Data: gin.H{
 			"Members": members,
 		},

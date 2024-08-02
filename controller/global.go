@@ -1,15 +1,16 @@
 package controller
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
 type Page struct {
-	StatusCode int
-	Template   string
-	Data       any
+	Template string
+	Data     any
 }
 
 func (p *Page) Render(ctx *gin.Context) {
-	ctx.HTML(p.StatusCode, p.Template, p.Data)
+	ctx.HTML(http.StatusOK, p.Template, p.Data)
 }
