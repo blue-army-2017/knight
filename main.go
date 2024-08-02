@@ -7,6 +7,7 @@ import (
 func main() {
 	router := gin.Default()
 
+	router.LoadHTMLGlob("view/**/*")
 	RegisterRoutes(router)
 
 	router.Run()
