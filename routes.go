@@ -16,13 +16,18 @@ func RegisterRoutes(router *gin.Engine) {
 	router.Static("/static", "./assets")
 	// Monitoring endpoints
 	router.GET("/health", handleHealth)
-
+	// Homepage
+	router.GET("/", handleIndex)
 	// Members Module
 	router.GET("/members", handleMembers)
 }
 
 func handleHealth(ctx *gin.Context) {
 	ctx.String(http.StatusOK, "UP")
+}
+
+func handleIndex(ctx *gin.Context) {
+	ctx.HTML(http.StatusOK, "pages/index", nil)
 }
 
 func handleMembers(ctx *gin.Context) {
