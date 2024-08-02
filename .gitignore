@@ -3,3 +3,4 @@ knight
 
 # Database
 *.db
+migration/*.json
