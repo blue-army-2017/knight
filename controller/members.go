@@ -7,9 +7,9 @@ import (
 )
 
 type MemberController interface {
-	Show() (*Page, error)
+	Show() *Page
 	New() *Page
-	NewPost(member *model.Member) error
+	PostNew(member *model.Member) *Page
 }
 
 type DefaultMemberController struct {
@@ -22,10 +22,12 @@ func NewMemberController() MemberController {
 	}
 }
 
-func (c *DefaultMemberController) Show() (*Page, error) {
+func (c *DefaultMemberController) Show() *Page {
 	members, err := c.repository.FindAll()
 	if err != nil {
-		return nil, err
+		return &Page{
+			Error: err,
+		}
 	}
 
 	return &Page{
@@ -33,7 +35,7 @@ func (c *DefaultMemberController) Show() (*Page, error) {
 		Data: gin.H{
 			"Members": members,
 		},
-	}, nil
+	}
 }
 
 func (c *DefaultMemberController) New() *Page {
@@ -50,6 +52,15 @@ func (c *DefaultMemberController) New() *Page {
 	}
 }
 
-func (c *DefaultMemberController) NewPost(member *model.Member) error {
-	return c.repository.Create(member)
+func (c *DefaultMemberController) PostNew(member *model.Member) *Page {
+	err := c.repository.Create(member)
+	if err != nil {
+		return &Page{
+			Error: err,
+		}
+	}
+
+	return &Page{
+		Redirect: "/members",
+	}
 }

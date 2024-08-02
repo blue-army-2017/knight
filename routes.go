@@ -34,11 +34,7 @@ func handleIndex(ctx *gin.Context) {
 }
 
 func handleMembers(ctx *gin.Context) {
-	page, err := memberController.Show()
-	if err != nil {
-		ctx.AbortWithError(http.StatusInternalServerError, err)
-		return
-	}
+	page := memberController.Show()
 	page.Render(ctx)
 }
 
@@ -54,10 +50,6 @@ func handleMembersNewPost(ctx *gin.Context) {
 		return
 	}
 
-	if err := memberController.NewPost(&member); err != nil {
-		ctx.AbortWithError(http.StatusInternalServerError, err)
-		return
-	}
-
-	ctx.Redirect(http.StatusFound, "/members")
+	page := memberController.PostNew(&member)
+	page.Render(ctx)
 }
