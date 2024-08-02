@@ -1,0 +1,16 @@
+{{define "pages/members/new"}}
+<!doctype html>
+<html lang="en">
+  {{template "head"}}
+  <body>
+    {{template "Header"}}
+    <main class="container">
+      <h3>Create New Member</h3>
+      <section>{{template "MemberForm" .Member}}</section>
+      <section class="grid">
+        <button type="submit" form="member-form">Create</button>
+      </section>
+    </main>
+  </body>
+</html>
+{{end}}

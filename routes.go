@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/blue-army-2017/knight/controller"
+	"github.com/blue-army-2017/knight/model"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,6 +21,8 @@ func RegisterRoutes(router *gin.Engine) {
 	router.GET("/", handleIndex)
 	// Members Module
 	router.GET("/members", handleMembers)
+	router.GET("/members/new", handleMembersNew)
+	router.POST("/members/new", handleMembersNewPost)
 }
 
 func handleHealth(ctx *gin.Context) {
@@ -37,4 +40,24 @@ func handleMembers(ctx *gin.Context) {
 		return
 	}
 	page.Render(ctx)
+}
+
+func handleMembersNew(ctx *gin.Context) {
+	page := memberController.New()
+	page.Render(ctx)
+}
+
+func handleMembersNewPost(ctx *gin.Context) {
+	var member model.Member
+	if err := ctx.Bind(&member); err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	if err := memberController.NewPost(&member); err != nil {
+		ctx.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	ctx.Redirect(http.StatusFound, "/members")
 }

@@ -2,7 +2,12 @@ module github.com/blue-army-2017/knight
 
 go 1.22.5
 
-require github.com/gin-gonic/gin v1.10.0
+require (
+	github.com/gin-gonic/gin v1.10.0
+	github.com/google/uuid v1.6.0
+	gorm.io/driver/sqlite v1.5.6
+	gorm.io/gorm v1.25.11
+)
 
 require (
 	github.com/bytedance/sonic v1.12.0 // indirect
@@ -34,6 +39,4 @@ require (
 	golang.org/x/text v0.16.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	gorm.io/driver/sqlite v1.5.6 // indirect
-	gorm.io/gorm v1.25.11 // indirect
 )

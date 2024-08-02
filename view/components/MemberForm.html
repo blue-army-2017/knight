@@ -1,0 +1,21 @@
+{{define "MemberForm"}}
+<form id="member-form" method="post">
+  <input type="hidden" name="id" value="{{.ID}}" />
+  <label>
+    First Name
+    <input type="text" name="first_name" value="{{.FirstName}}" required />
+  </label>
+  <label>
+    Last Name
+    <input type="text" name="last_name" value="{{.LastName}}" required />
+  </label>
+  <label>
+    {{if .Active}}
+    <input type="checkbox" role="switch" name="active" value="true" checked />
+    {{else}}
+    <input type="checkbox" role="switch" name="active" value="true" />
+    {{end}}
+    <span>Active</span>
+  </label>
+</form>
+{{end}}
