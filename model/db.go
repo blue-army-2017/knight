@@ -24,6 +24,8 @@ func init() {
 
 	models := []any{
 		Member{},
+		Season{},
+		SeasonGame{},
 	}
 	for _, model := range models {
 		if err := db.AutoMigrate(&model); err != nil {
