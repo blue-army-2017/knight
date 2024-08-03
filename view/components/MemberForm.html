@@ -11,9 +11,22 @@
   </label>
   <label>
     {{if .Active}}
-    <input type="checkbox" role="switch" name="active" value="true" checked />
+    <input
+      type="checkbox"
+      role="switch"
+      name="active"
+      value="true"
+      checked
+      aria-checked="true"
+    />
     {{else}}
-    <input type="checkbox" role="switch" name="active" value="true" />
+    <input
+      type="checkbox"
+      role="switch"
+      name="active"
+      value="true"
+      aria-checked="false"
+    />
     {{end}}
     <span>Active</span>
   </label>
