@@ -23,6 +23,8 @@ func RegisterRoutes(router *gin.Engine) {
 	router.GET("/members", handleMembers)
 	router.GET("/members/new", handleMembersNew)
 	router.POST("/members/new", handleMembersNewPost)
+	router.GET("/members/:id", handleMembersEdit)
+	router.POST("/members/:id", handleMembersEditPost)
 }
 
 func handleHealth(ctx *gin.Context) {
@@ -51,5 +53,22 @@ func handleMembersNewPost(ctx *gin.Context) {
 	}
 
 	page := memberController.PostNew(&member)
+	page.Render(ctx)
+}
+
+func handleMembersEdit(ctx *gin.Context) {
+	id := ctx.Param("id")
+	page := memberController.Edit(id)
+	page.Render(ctx)
+}
+
+func handleMembersEditPost(ctx *gin.Context) {
+	var member model.Member
+	if err := ctx.Bind(&member); err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	page := memberController.PostEdit(&member)
 	page.Render(ctx)
 }

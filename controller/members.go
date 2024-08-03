@@ -10,6 +10,8 @@ type MemberController interface {
 	Show() *Page
 	New() *Page
 	PostNew(member *model.Member) *Page
+	Edit(id string) *Page
+	PostEdit(member *model.Member) *Page
 }
 
 type DefaultMemberController struct {
@@ -55,6 +57,34 @@ func (c *DefaultMemberController) New() *Page {
 func (c *DefaultMemberController) PostNew(member *model.Member) *Page {
 	err := c.repository.Create(member)
 	if err != nil {
+		return &Page{
+			Error: err,
+		}
+	}
+
+	return &Page{
+		Redirect: "/members",
+	}
+}
+
+func (c *DefaultMemberController) Edit(id string) *Page {
+	member, err := c.repository.FindById(id)
+	if err != nil {
+		return &Page{
+			Error: err,
+		}
+	}
+
+	return &Page{
+		Template: "pages/members/edit",
+		Data: gin.H{
+			"Member": member,
+		},
+	}
+}
+
+func (c *DefaultMemberController) PostEdit(member *model.Member) *Page {
+	if err := c.repository.Update(member); err != nil {
 		return &Page{
 			Error: err,
 		}
