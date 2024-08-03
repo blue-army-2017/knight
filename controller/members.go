@@ -6,12 +6,41 @@ import (
 	"github.com/google/uuid"
 )
 
+type MemberDto struct {
+	ID        string `form:"id"`
+	FirstName string `form:"first_name"`
+	LastName  string `form:"last_name"`
+	Active    bool   `form:"active"`
+}
+
+func CreateMemberDto(member *model.Member) *MemberDto {
+	return &MemberDto{
+		ID:        member.ID,
+		FirstName: member.FirstName,
+		LastName:  member.LastName,
+		Active:    member.Active,
+	}
+}
+
+func (dto *MemberDto) ToModel() *model.Member {
+	id := dto.ID
+	if id == "" {
+		id = uuid.NewString()
+	}
+	return &model.Member{
+		ID:        id,
+		FirstName: dto.FirstName,
+		LastName:  dto.LastName,
+		Active:    dto.Active,
+	}
+}
+
 type MemberController interface {
-	Show() *Page
-	New() *Page
-	PostNew(member *model.Member) *Page
-	Edit(id string) *Page
-	PostEdit(member *model.Member) *Page
+	GetIndex() *Page
+	GetNew() *Page
+	PostNew(member *MemberDto) *Page
+	GetEdit(id string) *Page
+	PostEdit(member *MemberDto) *Page
 }
 
 type DefaultMemberController struct {
@@ -24,7 +53,7 @@ func NewMemberController() MemberController {
 	}
 }
 
-func (c *DefaultMemberController) Show() *Page {
+func (c *DefaultMemberController) GetIndex() *Page {
 	members, err := c.repository.FindAll()
 	if err != nil {
 		return &Page{
@@ -32,30 +61,36 @@ func (c *DefaultMemberController) Show() *Page {
 		}
 	}
 
+	var dtos []MemberDto
+	for _, member := range members {
+		dto := CreateMemberDto(&member)
+		dtos = append(dtos, *dto)
+	}
+
 	return &Page{
 		Template: "pages/members",
 		Data: gin.H{
-			"Members": members,
+			"Members": dtos,
 		},
 	}
 }
 
-func (c *DefaultMemberController) New() *Page {
+func (c *DefaultMemberController) GetNew() *Page {
 	member := model.Member{
-		ID:     uuid.New().String(),
 		Active: true,
 	}
 
 	return &Page{
 		Template: "pages/members/new",
 		Data: gin.H{
-			"Member": member,
+			"Member": CreateMemberDto(&member),
 		},
 	}
 }
 
-func (c *DefaultMemberController) PostNew(member *model.Member) *Page {
-	err := c.repository.Create(member)
+func (c *DefaultMemberController) PostNew(member *MemberDto) *Page {
+	data := member.ToModel()
+	err := c.repository.Create(data)
 	if err != nil {
 		return &Page{
 			Error: err,
@@ -67,7 +102,7 @@ func (c *DefaultMemberController) PostNew(member *model.Member) *Page {
 	}
 }
 
-func (c *DefaultMemberController) Edit(id string) *Page {
+func (c *DefaultMemberController) GetEdit(id string) *Page {
 	member, err := c.repository.FindById(id)
 	if err != nil {
 		return &Page{
@@ -78,13 +113,14 @@ func (c *DefaultMemberController) Edit(id string) *Page {
 	return &Page{
 		Template: "pages/members/edit",
 		Data: gin.H{
-			"Member": member,
+			"Member": CreateMemberDto(member),
 		},
 	}
 }
 
-func (c *DefaultMemberController) PostEdit(member *model.Member) *Page {
-	if err := c.repository.Update(member); err != nil {
+func (c *DefaultMemberController) PostEdit(member *MemberDto) *Page {
+	data := member.ToModel()
+	if err := c.repository.Update(data); err != nil {
 		return &Page{
 			Error: err,
 		}

@@ -4,10 +4,10 @@ import "gorm.io/gorm"
 
 type Member struct {
 	gorm.Model
-	ID        string `gorm:"primaryKey" form:"id"`
-	FirstName string `gorm:"not null" form:"first_name"`
-	LastName  string `gorm:"not null" form:"last_name"`
-	Active    bool   `gorm:"not null" form:"active"`
+	ID        string `gorm:"primaryKey"`
+	FirstName string `gorm:"not null"`
+	LastName  string `gorm:"not null"`
+	Active    bool   `gorm:"not null"`
 }
 
 type MemberRepository interface {
