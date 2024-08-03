@@ -2,6 +2,7 @@ package model
 
 import (
 	"log"
+	"os"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -10,8 +11,13 @@ import (
 var db *gorm.DB
 
 func init() {
+	dbName, dbNameExists := os.LookupEnv("DB_NAME")
+	if !dbNameExists {
+		dbName = "knight.db"
+	}
+
 	var err error
-	db, err = gorm.Open(sqlite.Open("knight.db"), &gorm.Config{})
+	db, err = gorm.Open(sqlite.Open(dbName), &gorm.Config{})
 	if err != nil {
 		log.Fatalln(err.Error())
 	}

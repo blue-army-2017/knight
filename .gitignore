@@ -4,3 +4,6 @@ knight
 # Database
 *.db
 migration/*.json
+
+# Coverage
+*.out
