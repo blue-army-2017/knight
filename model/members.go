@@ -1,6 +1,9 @@
 package model
 
-import "gorm.io/gorm"
+import (
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+)
 
 type Member struct {
 	gorm.Model
@@ -41,6 +44,7 @@ func (r *DefaultMemberRepository) FindById(id string) (*Member, error) {
 }
 
 func (r *DefaultMemberRepository) Create(member *Member) error {
+	member.ID = uuid.NewString()
 	result := db.Create(member)
 	return result.Error
 }

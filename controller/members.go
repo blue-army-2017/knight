@@ -3,7 +3,6 @@ package controller
 import (
 	"github.com/blue-army-2017/knight/model"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 type MemberDto struct {
@@ -23,12 +22,8 @@ func CreateMemberDto(member *model.Member) *MemberDto {
 }
 
 func (dto *MemberDto) ToModel() *model.Member {
-	id := dto.ID
-	if id == "" {
-		id = uuid.NewString()
-	}
 	return &model.Member{
-		ID:        id,
+		ID:        dto.ID,
 		FirstName: dto.FirstName,
 		LastName:  dto.LastName,
 		Active:    dto.Active,
