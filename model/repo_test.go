@@ -3,7 +3,6 @@ package model
 import (
 	"testing"
 
-	"github.com/google/uuid"
 	"github.com/onsi/gomega"
 	"github.com/onsi/gomega/gstruct"
 	"gorm.io/gorm"
@@ -30,27 +29,27 @@ var members = []Member{
 	},
 }
 
-func setupMembersTest() *DefaultMemberRepository {
+func setupRepoTest() *DefaultCRUDRepository[Member] {
 	r := db.Create(&members)
 	if r.Error != nil {
 		panic(r.Error)
 	}
 
-	return &DefaultMemberRepository{}
+	return &DefaultCRUDRepository[Member]{}
 }
 
-func teardownMembersTest() {
+func teardownRepoTest() {
 	r := db.Exec("DELETE FROM members")
 	if r.Error != nil {
 		panic(r.Error)
 	}
 }
 
-func TestDefaultMemberRepositoryFindAll(t *testing.T) {
-	tested := setupMembersTest()
-	defer teardownMembersTest()
+func TestDefaultCRUDRepositoryFindAll(t *testing.T) {
+	tested := setupRepoTest()
+	defer teardownRepoTest()
 
-	result, err := tested.FindAll()
+	result, err := tested.FindAll("last_name", "first_name")
 
 	g := gomega.NewWithT(t)
 	g.Expect(err).To(gomega.BeNil())
@@ -62,9 +61,9 @@ func TestDefaultMemberRepositoryFindAll(t *testing.T) {
 	}))
 }
 
-func TestDefaultMemberRepositoryFindById(t *testing.T) {
-	tested := setupMembersTest()
-	defer teardownMembersTest()
+func TestDefaultCRUDRepositoryFindById(t *testing.T) {
+	tested := setupRepoTest()
+	defer teardownRepoTest()
 
 	result, err := tested.FindById("42")
 
@@ -73,9 +72,9 @@ func TestDefaultMemberRepositoryFindById(t *testing.T) {
 	g.Expect(*result).To(gomega.BeComparableTo(members[1]))
 }
 
-func TestDefaultMemberRepositoryFindByIdNotFound(t *testing.T) {
-	tested := setupMembersTest()
-	defer teardownMembersTest()
+func TestDefaultCRUDRepositoryFindByIdNotFound(t *testing.T) {
+	tested := setupRepoTest()
+	defer teardownRepoTest()
 
 	_, err := tested.FindById("xxx")
 
@@ -83,9 +82,9 @@ func TestDefaultMemberRepositoryFindByIdNotFound(t *testing.T) {
 	g.Expect(err).To(gomega.MatchError(gorm.ErrRecordNotFound))
 }
 
-func TestDefaultMemberRepositoryCreate(t *testing.T) {
-	tested := setupMembersTest()
-	defer teardownMembersTest()
+func TestDefaultCRUDRepositoryCreate(t *testing.T) {
+	tested := setupRepoTest()
+	defer teardownRepoTest()
 
 	member := Member{
 		FirstName: "Zaphod",
@@ -96,7 +95,6 @@ func TestDefaultMemberRepositoryCreate(t *testing.T) {
 
 	g := gomega.NewWithT(t)
 	g.Expect(err).To(gomega.BeNil())
-	g.Expect(member.ID).To(gomega.HaveLen(len(uuid.NewString())))
 	var entry Member
 	if result := db.First(&entry, "id = ?", member.ID); result.Error != nil {
 		t.Fatal(result.Error)
@@ -104,9 +102,9 @@ func TestDefaultMemberRepositoryCreate(t *testing.T) {
 	g.Expect(entry).To(gomega.BeComparableTo(member))
 }
 
-func TestDefaultMemberRepositoryUpdate(t *testing.T) {
-	tested := setupMembersTest()
-	defer teardownMembersTest()
+func TestDefaultCRUDRepositoryUpdate(t *testing.T) {
+	tested := setupRepoTest()
+	defer teardownRepoTest()
 
 	member := Member{
 		ID:        "43",
@@ -123,4 +121,20 @@ func TestDefaultMemberRepositoryUpdate(t *testing.T) {
 		t.Fatal(result.Error)
 	}
 	g.Expect(entry).To(gomega.BeComparableTo(member))
+}
+
+func TestDefaultCRUDRepositoryDelete(t *testing.T) {
+	tested := setupRepoTest()
+	defer teardownRepoTest()
+
+	member := Member{
+		ID: "42",
+	}
+	err := tested.Delete(&member)
+
+	g := gomega.NewWithT(t)
+	g.Expect(err).To(gomega.BeNil())
+	var entry Member
+	result := db.First(&entry, "id = ?", member.ID)
+	g.Expect(result.Error).To(gomega.MatchError(gorm.ErrRecordNotFound))
 }

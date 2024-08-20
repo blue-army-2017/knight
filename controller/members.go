@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/blue-army-2017/knight/model"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type MemberDto struct {
@@ -39,17 +40,17 @@ type MemberController interface {
 }
 
 type DefaultMemberController struct {
-	repository model.MemberRepository
+	repository model.CRUDRepository[model.Member]
 }
 
 func NewMemberController() MemberController {
 	return &DefaultMemberController{
-		repository: model.NewMemberRepository(),
+		repository: model.NewCRUDRepository[model.Member](),
 	}
 }
 
 func (c *DefaultMemberController) GetIndex() *Page {
-	members, err := c.repository.FindAll()
+	members, err := c.repository.FindAll("last_name", "first_name")
 	if err != nil {
 		return &Page{
 			Error: err,
@@ -72,6 +73,7 @@ func (c *DefaultMemberController) GetIndex() *Page {
 
 func (c *DefaultMemberController) GetNew() *Page {
 	member := model.Member{
+		ID:     uuid.NewString(),
 		Active: true,
 	}
 
