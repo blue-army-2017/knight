@@ -1,0 +1,25 @@
+{{define "pages/seasons/edit"}}
+<!doctype html>
+<html lang="en">
+  {{template "head"}}
+  <body>
+    {{template "Header"}}
+    <main class="container">
+      <h3>Edit Season</h3>
+      <section>{{template "SeasonForm" .Season}}</section>
+      <section class="grid">
+        <button type="submit" form="season-form">Save</button>
+        <button
+          type="submit"
+          form="season-form"
+          formaction="?delete"
+          class="contrast"
+        >
+          Delete
+        </button>
+        {{template "BackBtn"}}
+      </section>
+    </main>
+  </body>
+</html>
+{{end}}

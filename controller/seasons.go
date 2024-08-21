@@ -29,6 +29,8 @@ type SeasonController interface {
 	GetIndex() Page
 	GetNew() Page
 	PostNew(season *SeasonDto) Page
+	GetEdit(id string) Page
+	PostEdit(season *SeasonDto, delete bool) Page
 }
 
 type DefaultSeasonController struct {
@@ -79,6 +81,43 @@ func (c *DefaultSeasonController) GetNew() Page {
 func (c *DefaultSeasonController) PostNew(season *SeasonDto) Page {
 	data := season.ToModel()
 	err := c.repository.Create(data)
+	if err != nil {
+		return &ErrorPage{
+			Error: err,
+		}
+	}
+
+	return &RedirectPage{
+		Redirect: "/seasons",
+	}
+}
+
+func (c *DefaultSeasonController) GetEdit(id string) Page {
+	season, err := c.repository.FindById(id)
+	if err != nil {
+		return &ErrorPage{
+			Error: err,
+		}
+	}
+
+	return &HtmlPage{
+		Template: "pages/seasons/edit",
+		Data: gin.H{
+			"Season": CreateSeasonDto(season),
+		},
+	}
+
+}
+
+func (c *DefaultSeasonController) PostEdit(season *SeasonDto, delete bool) Page {
+	data := season.ToModel()
+
+	var err error
+	if delete {
+		err = c.repository.Delete(data)
+	} else {
+		err = c.repository.Update(data)
+	}
 	if err != nil {
 		return &ErrorPage{
 			Error: err,
