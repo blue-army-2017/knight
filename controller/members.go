@@ -32,11 +32,11 @@ func (dto *MemberDto) ToModel() *model.Member {
 }
 
 type MemberController interface {
-	GetIndex() *Page
-	GetNew() *Page
-	PostNew(member *MemberDto) *Page
-	GetEdit(id string) *Page
-	PostEdit(member *MemberDto) *Page
+	GetIndex() Page
+	GetNew() Page
+	PostNew(member *MemberDto) Page
+	GetEdit(id string) Page
+	PostEdit(member *MemberDto) Page
 }
 
 type DefaultMemberController struct {
@@ -49,10 +49,10 @@ func NewMemberController() MemberController {
 	}
 }
 
-func (c *DefaultMemberController) GetIndex() *Page {
+func (c *DefaultMemberController) GetIndex() Page {
 	members, err := c.repository.FindAll("last_name", "first_name")
 	if err != nil {
-		return &Page{
+		return &ErrorPage{
 			Error: err,
 		}
 	}
@@ -63,7 +63,7 @@ func (c *DefaultMemberController) GetIndex() *Page {
 		dtos = append(dtos, *dto)
 	}
 
-	return &Page{
+	return &HtmlPage{
 		Template: "pages/members",
 		Data: gin.H{
 			"Members": dtos,
@@ -71,13 +71,13 @@ func (c *DefaultMemberController) GetIndex() *Page {
 	}
 }
 
-func (c *DefaultMemberController) GetNew() *Page {
+func (c *DefaultMemberController) GetNew() Page {
 	member := model.Member{
 		ID:     uuid.NewString(),
 		Active: true,
 	}
 
-	return &Page{
+	return &HtmlPage{
 		Template: "pages/members/new",
 		Data: gin.H{
 			"Member": CreateMemberDto(&member),
@@ -85,29 +85,29 @@ func (c *DefaultMemberController) GetNew() *Page {
 	}
 }
 
-func (c *DefaultMemberController) PostNew(member *MemberDto) *Page {
+func (c *DefaultMemberController) PostNew(member *MemberDto) Page {
 	data := member.ToModel()
 	err := c.repository.Create(data)
 	if err != nil {
-		return &Page{
+		return &ErrorPage{
 			Error: err,
 		}
 	}
 
-	return &Page{
+	return &RedirectPage{
 		Redirect: "/members",
 	}
 }
 
-func (c *DefaultMemberController) GetEdit(id string) *Page {
+func (c *DefaultMemberController) GetEdit(id string) Page {
 	member, err := c.repository.FindById(id)
 	if err != nil {
-		return &Page{
+		return &ErrorPage{
 			Error: err,
 		}
 	}
 
-	return &Page{
+	return &HtmlPage{
 		Template: "pages/members/edit",
 		Data: gin.H{
 			"Member": CreateMemberDto(member),
@@ -115,15 +115,15 @@ func (c *DefaultMemberController) GetEdit(id string) *Page {
 	}
 }
 
-func (c *DefaultMemberController) PostEdit(member *MemberDto) *Page {
+func (c *DefaultMemberController) PostEdit(member *MemberDto) Page {
 	data := member.ToModel()
 	if err := c.repository.Update(data); err != nil {
-		return &Page{
+		return &ErrorPage{
 			Error: err,
 		}
 	}
 
-	return &Page{
+	return &RedirectPage{
 		Redirect: "/members",
 	}
 }
