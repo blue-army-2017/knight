@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/blue-army-2017/knight/model"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type SeasonDto struct {
@@ -26,6 +27,8 @@ func (dto *SeasonDto) ToModel() *model.Season {
 
 type SeasonController interface {
 	GetIndex() Page
+	GetNew() Page
+	PostNew(season *SeasonDto) Page
 }
 
 type DefaultSeasonController struct {
@@ -57,5 +60,32 @@ func (c *DefaultSeasonController) GetIndex() Page {
 		Data: gin.H{
 			"Seasons": dtos,
 		},
+	}
+}
+
+func (c *DefaultSeasonController) GetNew() Page {
+	season := SeasonDto{
+		ID: uuid.NewString(),
+	}
+
+	return &HtmlPage{
+		Template: "pages/seasons/new",
+		Data: gin.H{
+			"Season": season,
+		},
+	}
+}
+
+func (c *DefaultSeasonController) PostNew(season *SeasonDto) Page {
+	data := season.ToModel()
+	err := c.repository.Create(data)
+	if err != nil {
+		return &ErrorPage{
+			Error: err,
+		}
+	}
+
+	return &RedirectPage{
+		Redirect: "/seasons",
 	}
 }

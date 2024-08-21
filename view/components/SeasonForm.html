@@ -1,0 +1,9 @@
+{{define "SeasonForm"}}
+<form id="season-form" method="post">
+  <input type="hidden" name="id" value="{{.ID}}" />
+  <label>
+    Name
+    <input type="text" name="name" value="{{.Name}}" required />
+  </label>
+</form>
+{{end}}

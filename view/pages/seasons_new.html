@@ -1,0 +1,17 @@
+{{define "pages/seasons/new"}}
+<!doctype html>
+<html lang="en">
+  {{template "head"}}
+  <body>
+    {{template "Header"}}
+    <main class="container">
+      <h3>Create New Season</h3>
+      <section>{{template "SeasonForm" .Season}}</section>
+      <section class="grid">
+        <button type="submit" form="season-form">Create</button>
+        {{template "BackBtn"}}
+      </section>
+    </main>
+  </body>
+</html>
+{{end}}
