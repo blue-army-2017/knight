@@ -8,6 +8,10 @@ import (
 	"gorm.io/gorm"
 )
 
+const (
+	WHERE_ID = "id = ?"
+)
+
 var members = []Member{
 	{
 		ID:        "00",
@@ -96,7 +100,7 @@ func TestDefaultCRUDRepositoryCreate(t *testing.T) {
 	g := gomega.NewWithT(t)
 	g.Expect(err).To(gomega.BeNil())
 	var entry Member
-	if result := db.First(&entry, "id = ?", member.ID); result.Error != nil {
+	if result := db.First(&entry, WHERE_ID, member.ID); result.Error != nil {
 		t.Fatal(result.Error)
 	}
 	g.Expect(entry).To(gomega.BeComparableTo(member))
@@ -117,7 +121,7 @@ func TestDefaultCRUDRepositoryUpdate(t *testing.T) {
 	g := gomega.NewWithT(t)
 	g.Expect(err).To(gomega.BeNil())
 	var entry Member
-	if result := db.First(&entry, "id = ?", member.ID); result.Error != nil {
+	if result := db.First(&entry, WHERE_ID, member.ID); result.Error != nil {
 		t.Fatal(result.Error)
 	}
 	g.Expect(entry).To(gomega.BeComparableTo(member))
@@ -135,6 +139,6 @@ func TestDefaultCRUDRepositoryDelete(t *testing.T) {
 	g := gomega.NewWithT(t)
 	g.Expect(err).To(gomega.BeNil())
 	var entry Member
-	result := db.First(&entry, "id = ?", member.ID)
+	result := db.First(&entry, WHERE_ID, member.ID)
 	g.Expect(result.Error).To(gomega.MatchError(gorm.ErrRecordNotFound))
 }
