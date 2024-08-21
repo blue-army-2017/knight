@@ -1,0 +1,33 @@
+{{define "pages/seasons"}}
+<!doctype html>
+<html lang="en">
+  {{template "head"}}
+  <body>
+    {{template "Header"}}
+    <main class="container">
+      <h3>Seasons</h3>
+      <section class="grid">
+        <a href="/seasons/new" role="button">New Season</a>
+      </section>
+      <section class="overflow-auto">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{range .Seasons}}
+            <tr>
+              <th scope="row">{{.Name}}</th>
+              <td><a href="/seasons/{{.ID}}" role="button">Edit</a></td>
+            </tr>
+            {{end}}
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </body>
+</html>
+{{end}}

@@ -20,6 +20,9 @@ func Register(router *gin.Engine) {
 	router.POST("/members/new", handleMembersNewPost)
 	router.GET("/members/:id", handleMembersEdit)
 	router.POST("/members/:id", handleMembersEditPost)
+
+	// Seasons Module
+	router.GET("/seasons", handleSeasons)
 }
 
 func handleHealth(ctx *gin.Context) {
