@@ -72,7 +72,7 @@ func (c *DefaultMemberController) GetIndex() Page {
 }
 
 func (c *DefaultMemberController) GetNew() Page {
-	member := model.Member{
+	member := MemberDto{
 		ID:     uuid.NewString(),
 		Active: true,
 	}
@@ -80,7 +80,7 @@ func (c *DefaultMemberController) GetNew() Page {
 	return &HtmlPage{
 		Template: "pages/members/new",
 		Data: gin.H{
-			"Member": CreateMemberDto(&member),
+			"Member": &member,
 		},
 	}
 }

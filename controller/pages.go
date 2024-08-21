@@ -14,7 +14,7 @@ type Page interface {
 
 type HtmlPage struct {
 	Template string
-	Data     any
+	Data     gin.H
 }
 
 func (p *HtmlPage) Render(ctx *gin.Context) {
