@@ -1,6 +1,6 @@
 module github.com/blue-army-2017/knight
 
-go 1.22.5
+go 1.23.0
 
 require (
 	github.com/gin-gonic/gin v1.10.0
