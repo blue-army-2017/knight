@@ -6,15 +6,10 @@ import (
 	"gorm.io/gorm"
 )
 
-type Entity interface {
-	Member | Season | SeasonGame
-}
-
 type CRUDRepository[T Entity] interface {
 	FindAll(orderBy ...string) ([]T, error)
 	FindById(id string) (*T, error)
-	Create(entity *T) error
-	Update(entity *T) error
+	Save(entity *T) error
 	Delete(entity *T) error
 }
 
@@ -46,12 +41,7 @@ func (r *DefaultCRUDRepository[T]) FindById(id string) (*T, error) {
 	return &entity, result.Error
 }
 
-func (r *DefaultCRUDRepository[T]) Create(entity *T) error {
-	result := db.Create(entity)
-	return result.Error
-}
-
-func (r *DefaultCRUDRepository[T]) Update(entity *T) error {
+func (r *DefaultCRUDRepository[T]) Save(entity *T) error {
 	result := db.Save(entity)
 	return result.Error
 }

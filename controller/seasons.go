@@ -1,27 +1,32 @@
 package controller
 
 import (
+	"time"
+
 	"github.com/blue-army-2017/knight/model"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
 type SeasonDto struct {
-	ID   string `form:"id"`
-	Name string `form:"name"`
+	ID      string `form:"id"`
+	Name    string `form:"name"`
+	Created string `form:"created"`
 }
 
 func CreateSeasonDto(season *model.Season) *SeasonDto {
 	return &SeasonDto{
-		ID:   season.ID,
-		Name: season.Name,
+		ID:      season.ID,
+		Name:    season.Name,
+		Created: season.Created,
 	}
 }
 
 func (dto *SeasonDto) ToModel() *model.Season {
 	return &model.Season{
-		ID:   dto.ID,
-		Name: dto.Name,
+		ID:      dto.ID,
+		Name:    dto.Name,
+		Created: dto.Created,
 	}
 }
 
@@ -44,7 +49,7 @@ func NewSeasonController() SeasonController {
 }
 
 func (c *DefaultSeasonController) GetIndex() Page {
-	seasons, err := c.repository.FindAll("created_at desc")
+	seasons, err := c.repository.FindAll("created desc")
 	if err != nil {
 		return &ErrorPage{
 			Error: err,
@@ -67,7 +72,8 @@ func (c *DefaultSeasonController) GetIndex() Page {
 
 func (c *DefaultSeasonController) GetNew() Page {
 	season := SeasonDto{
-		ID: uuid.NewString(),
+		ID:      uuid.NewString(),
+		Created: time.Now().Format("2006-01-02"),
 	}
 
 	return &HtmlPage{
@@ -80,7 +86,7 @@ func (c *DefaultSeasonController) GetNew() Page {
 
 func (c *DefaultSeasonController) PostNew(season *SeasonDto) Page {
 	data := season.ToModel()
-	err := c.repository.Create(data)
+	err := c.repository.Save(data)
 	if err != nil {
 		return &ErrorPage{
 			Error: err,
@@ -116,7 +122,7 @@ func (c *DefaultSeasonController) PostEdit(season *SeasonDto, delete bool) Page 
 	if delete {
 		err = c.repository.Delete(data)
 	} else {
-		err = c.repository.Update(data)
+		err = c.repository.Save(data)
 	}
 	if err != nil {
 		return &ErrorPage{

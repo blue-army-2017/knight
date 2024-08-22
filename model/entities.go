@@ -2,12 +2,12 @@ package model
 
 import (
 	"time"
-
-	"gorm.io/gorm"
 )
 
+type Entity interface {
+}
+
 type Member struct {
-	gorm.Model
 	ID        string `gorm:"primaryKey"`
 	FirstName string `gorm:"not null"`
 	LastName  string `gorm:"not null"`
@@ -15,14 +15,13 @@ type Member struct {
 }
 
 type Season struct {
-	gorm.Model
-	ID    string `gorm:"primaryKey"`
-	Name  string `gorm:"not null"`
-	Games []SeasonGame
+	ID      string `gorm:"primaryKey"`
+	Name    string `gorm:"not null"`
+	Created string `gorm:"not null"`
+	Games   []SeasonGame
 }
 
 type SeasonGame struct {
-	gorm.Model
 	ID             string    `gorm:"primaryKey"`
 	Opponent       string    `gorm:"not null"`
 	Home           bool      `gorm:"not null"`

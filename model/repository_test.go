@@ -86,7 +86,7 @@ func TestDefaultCRUDRepositoryFindByIdNotFound(t *testing.T) {
 	g.Expect(err).To(gomega.MatchError(gorm.ErrRecordNotFound))
 }
 
-func TestDefaultCRUDRepositoryCreate(t *testing.T) {
+func TestDefaultCRUDRepositorySaveCreate(t *testing.T) {
 	tested := setupRepoTest()
 	defer teardownRepoTest()
 
@@ -95,7 +95,7 @@ func TestDefaultCRUDRepositoryCreate(t *testing.T) {
 		LastName:  "Beeblebrox",
 		Active:    true,
 	}
-	err := tested.Create(&member)
+	err := tested.Save(&member)
 
 	g := gomega.NewWithT(t)
 	g.Expect(err).To(gomega.BeNil())
@@ -106,7 +106,7 @@ func TestDefaultCRUDRepositoryCreate(t *testing.T) {
 	g.Expect(entry).To(gomega.BeComparableTo(member))
 }
 
-func TestDefaultCRUDRepositoryUpdate(t *testing.T) {
+func TestDefaultCRUDRepositorySaveUpdate(t *testing.T) {
 	tested := setupRepoTest()
 	defer teardownRepoTest()
 
@@ -116,7 +116,7 @@ func TestDefaultCRUDRepositoryUpdate(t *testing.T) {
 		LastName:  "Beeblebrox",
 		Active:    true,
 	}
-	err := tested.Update(&member)
+	err := tested.Save(&member)
 
 	g := gomega.NewWithT(t)
 	g.Expect(err).To(gomega.BeNil())

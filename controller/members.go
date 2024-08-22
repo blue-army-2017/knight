@@ -87,7 +87,7 @@ func (c *DefaultMemberController) GetNew() Page {
 
 func (c *DefaultMemberController) PostNew(member *MemberDto) Page {
 	data := member.ToModel()
-	err := c.repository.Create(data)
+	err := c.repository.Save(data)
 	if err != nil {
 		return &ErrorPage{
 			Error: err,
@@ -117,7 +117,7 @@ func (c *DefaultMemberController) GetEdit(id string) Page {
 
 func (c *DefaultMemberController) PostEdit(member *MemberDto) Page {
 	data := member.ToModel()
-	if err := c.repository.Update(data); err != nil {
+	if err := c.repository.Save(data); err != nil {
 		return &ErrorPage{
 			Error: err,
 		}

@@ -70,11 +70,9 @@ func migrate(dbFile, dataFile string) {
 	var seasonGames []model.SeasonGame
 	for seasonId, seasonData := range data.Season {
 		season := model.Season{
-			ID:   seasonId,
-			Name: seasonData.Name,
-			Model: gorm.Model{
-				CreatedAt: seasonData.Created.In(timeLocation),
-			},
+			ID:      seasonId,
+			Name:    seasonData.Name,
+			Created: seasonData.Created.Format("2006-01-02"),
 		}
 		seasons = append(seasons, season)
 
