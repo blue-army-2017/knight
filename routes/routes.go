@@ -27,6 +27,9 @@ func Register(router *gin.Engine) {
 	router.POST("/seasons/new", handleSeasonsNewPost)
 	router.GET("/seasons/:id", handleSeasonsEdit)
 	router.POST("/seasons/:id", handleSeasonsEditPost)
+
+	// Season Games Module
+	router.GET("/games", handleSeasonGames)
 }
 
 func handleHealth(ctx *gin.Context) {

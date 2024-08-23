@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type CRUDRepository[T Entity] interface {
@@ -25,6 +26,7 @@ func (r *DefaultCRUDRepository[T]) FindAll(orderBy ...string) ([]T, error) {
 	var result *gorm.DB
 	if len(orderBy) > 0 {
 		result = db.
+			Preload(clause.Associations).
 			Order(strings.Join(orderBy, ",")).
 			Find(&entities)
 	} else {

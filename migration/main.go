@@ -72,7 +72,7 @@ func migrate(dbFile, dataFile string) {
 		season := model.Season{
 			ID:      seasonId,
 			Name:    seasonData.Name,
-			Created: seasonData.Created.Format("2006-01-02"),
+			Created: seasonData.Created.In(timeLocation).Format("2006-01-02"),
 		}
 		seasons = append(seasons, season)
 
@@ -82,7 +82,7 @@ func migrate(dbFile, dataFile string) {
 				Opponent: gameData.Opponent,
 				Home:     gameData.Home,
 				Mode:     gameData.Mode,
-				Date:     gameData.Date.In(timeLocation),
+				Date:     gameData.Date.In(timeLocation).Format("2006-01-02"),
 				SeasonID: seasonId,
 			}
 

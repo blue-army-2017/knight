@@ -1,0 +1,62 @@
+{{define "pages/games"}}
+<!doctype html>
+<html lang="en">
+  {{template "head"}}
+  <body>
+    {{template "Header"}}
+    <main class="container">
+      <h3>Season Games</h3>
+      <section class="grid">
+        <a href="/games/new" role="button">New Game</a>
+      </section>
+      <section class="overflow-auto">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Opponent</th>
+              <th scope="col">Home</th>
+              <th scope="col">Mode</th>
+              <th scope="col">Date</th>
+              <th scope="col">Season</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{range .Games}}
+            <tr>
+              <th scope="row">{{.Opponent}}</th>
+              <th scope="row">
+                {{if .Home}}
+                <img
+                  alt="Home"
+                  src="https://img.shields.io/badge/Home-darkblue"
+                />
+                {{else}}
+                <img alt="Away" src="https://img.shields.io/badge/Away-grey" />
+                {{end}}
+              </th>
+              <th scope="row">
+                {{if eq .Mode "playoffs"}}
+                <img
+                  alt="Playoffs"
+                  src="https://img.shields.io/badge/Playoffs-red"
+                />
+                {{else}}
+                <img
+                  alt="Regular"
+                  src="https://img.shields.io/badge/Regular-blue"
+                />
+                {{end}}
+              </th>
+              <th scope="row">{{.Date}}</th>
+              <th scope="row">{{.Season}}</th>
+              <td><a href="/games/{{.ID}}" role="button">Edit</a></td>
+            </tr>
+            {{end}}
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </body>
+</html>
+{{end}}
