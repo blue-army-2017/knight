@@ -21,7 +21,12 @@
             {{range .Seasons}}
             <tr>
               <th scope="row">{{.Name}}</th>
-              <td><a href="/seasons/{{.ID}}" role="button">Edit</a></td>
+              <td class="grid">
+                <a href="/seasons/{{.ID}}" role="button">Edit</a>
+                <a href="/games?season={{.ID}}" role="button" class="secondary">
+                  Games
+                </a>
+              </td>
             </tr>
             {{end}}
           </tbody>

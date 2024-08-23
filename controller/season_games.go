@@ -39,7 +39,7 @@ func (dto *SeasonGameDto) ToModel() *model.SeasonGame {
 }
 
 type SeasonGameController interface {
-	GetIndex() Page
+	GetIndex(seasonId string) Page
 }
 
 type DefaultSeasonGameController struct {
@@ -52,8 +52,14 @@ func NewSeasonGameController() SeasonGameController {
 	}
 }
 
-func (c *DefaultSeasonGameController) GetIndex() Page {
-	games, err := c.repository.FindAll("date desc")
+func (c *DefaultSeasonGameController) GetIndex(seasonId string) Page {
+	var games []model.SeasonGame
+	var err error
+	if len(seasonId) > 0 {
+		games, err = c.repository.FindAllBy("season_id", seasonId, "date desc")
+	} else {
+		games, err = c.repository.FindAll("date desc")
+	}
 	if err != nil {
 		return &ErrorPage{
 			Error: err,

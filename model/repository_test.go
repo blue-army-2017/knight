@@ -53,7 +53,7 @@ func TestDefaultCRUDRepositoryFindAll(t *testing.T) {
 	tested := setupRepoTest()
 	defer teardownRepoTest()
 
-	result, err := tested.FindAll("last_name", "first_name")
+	result, err := tested.FindAll("last_name,first_name")
 
 	g := gomega.NewWithT(t)
 	g.Expect(err).To(gomega.BeNil())
@@ -62,6 +62,21 @@ func TestDefaultCRUDRepositoryFindAll(t *testing.T) {
 		"0": gomega.BeComparableTo(members[1]),
 		"1": gomega.BeComparableTo(members[2]),
 		"2": gomega.BeComparableTo(members[0]),
+	}))
+}
+
+func TestDefaultCRUDRepositoryFindAllBy(t *testing.T) {
+	tested := setupRepoTest()
+	defer teardownRepoTest()
+
+	result, err := tested.FindAllBy("active", true, "last_name,first_name")
+
+	g := gomega.NewWithT(t)
+	g.Expect(err).To(gomega.BeNil())
+	g.Expect(result).To(gomega.HaveLen(2))
+	g.Expect(result).To(gstruct.MatchAllElementsWithIndex(gstruct.IndexIdentity, gstruct.Elements{
+		"0": gomega.BeComparableTo(members[1]),
+		"1": gomega.BeComparableTo(members[2]),
 	}))
 }
 

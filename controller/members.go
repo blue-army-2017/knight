@@ -50,7 +50,7 @@ func NewMemberController() MemberController {
 }
 
 func (c *DefaultMemberController) GetIndex() Page {
-	members, err := c.repository.FindAll("last_name", "first_name")
+	members, err := c.repository.FindAll("last_name,first_name")
 	if err != nil {
 		return &ErrorPage{
 			Error: err,

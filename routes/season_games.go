@@ -8,6 +8,7 @@ import (
 var seasonGamesController = controller.NewSeasonGameController()
 
 func handleSeasonGames(ctx *gin.Context) {
-	page := seasonGamesController.GetIndex()
+	seasonId := ctx.Query("season")
+	page := seasonGamesController.GetIndex(seasonId)
 	page.Render(ctx)
 }

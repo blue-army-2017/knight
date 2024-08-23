@@ -1,14 +1,14 @@
 package model
 
 import (
-	"strings"
+	"fmt"
 
-	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
 type CRUDRepository[T Entity] interface {
-	FindAll(orderBy ...string) ([]T, error)
+	FindAll(orderBy string) ([]T, error)
+	FindAllBy(key string, value any, orderBy string) ([]T, error)
 	FindById(id string) (*T, error)
 	Save(entity *T) error
 	Delete(entity *T) error
@@ -21,19 +21,22 @@ func NewCRUDRepository[T Entity]() CRUDRepository[T] {
 	return &DefaultCRUDRepository[T]{}
 }
 
-func (r *DefaultCRUDRepository[T]) FindAll(orderBy ...string) ([]T, error) {
+func (r *DefaultCRUDRepository[T]) FindAll(orderBy string) ([]T, error) {
 	var entities []T
-	var result *gorm.DB
-	if len(orderBy) > 0 {
-		result = db.
-			Preload(clause.Associations).
-			Order(strings.Join(orderBy, ",")).
-			Find(&entities)
-	} else {
-		result = db.
-			Order("id").
-			Find(&entities)
-	}
+	result := db.
+		Preload(clause.Associations).
+		Order(orderBy).
+		Find(&entities)
+	return entities, result.Error
+}
+
+func (r *DefaultCRUDRepository[T]) FindAllBy(key string, value any, orderBy string) ([]T, error) {
+	var entities []T
+	result := db.
+		Preload(clause.Associations).
+		Where(fmt.Sprintf("%s = ?", key), value).
+		Order(orderBy).
+		Find(&entities)
 	return entities, result.Error
 }
 
