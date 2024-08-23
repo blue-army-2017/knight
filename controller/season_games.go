@@ -1,8 +1,11 @@
 package controller
 
 import (
+	"time"
+
 	"github.com/blue-army-2017/knight/model"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type SeasonGameDto struct {
@@ -40,15 +43,19 @@ func (dto *SeasonGameDto) ToModel() *model.SeasonGame {
 
 type SeasonGameController interface {
 	GetIndex(seasonId string) Page
+	GetNew() Page
+	PostNew(game *SeasonGameDto) Page
 }
 
 type DefaultSeasonGameController struct {
-	repository model.CRUDRepository[model.SeasonGame]
+	gamesRepository   model.CRUDRepository[model.SeasonGame]
+	seasonsRepository model.CRUDRepository[model.Season]
 }
 
 func NewSeasonGameController() SeasonGameController {
 	return &DefaultSeasonGameController{
-		repository: model.NewCRUDRepository[model.SeasonGame](),
+		gamesRepository:   model.NewCRUDRepository[model.SeasonGame](),
+		seasonsRepository: model.NewCRUDRepository[model.Season](),
 	}
 }
 
@@ -56,9 +63,9 @@ func (c *DefaultSeasonGameController) GetIndex(seasonId string) Page {
 	var games []model.SeasonGame
 	var err error
 	if len(seasonId) > 0 {
-		games, err = c.repository.FindAllBy("season_id", seasonId, "date desc")
+		games, err = c.gamesRepository.FindAllBy("season_id", seasonId, "date desc")
 	} else {
-		games, err = c.repository.FindAll("date desc")
+		games, err = c.gamesRepository.FindAll("date desc")
 	}
 	if err != nil {
 		return &ErrorPage{
@@ -77,5 +84,48 @@ func (c *DefaultSeasonGameController) GetIndex(seasonId string) Page {
 		Data: gin.H{
 			"Games": dtos,
 		},
+	}
+}
+
+func (c *DefaultSeasonGameController) GetNew() Page {
+	game := SeasonGameDto{
+		ID:   uuid.NewString(),
+		Home: true,
+		Mode: "regular",
+		Date: time.Now().Format("2006-01-02"),
+	}
+
+	seasonsData, err := c.seasonsRepository.FindAll("created desc")
+	if err != nil {
+		return &ErrorPage{
+			Error: err,
+		}
+	}
+	var seasons []SeasonDto
+	for _, data := range seasonsData {
+		season := CreateSeasonDto(&data)
+		seasons = append(seasons, *season)
+	}
+
+	return &HtmlPage{
+		Template: "pages/games/new",
+		Data: gin.H{
+			"Game":    game,
+			"Seasons": seasons,
+		},
+	}
+}
+
+func (c *DefaultSeasonGameController) PostNew(game *SeasonGameDto) Page {
+	data := game.ToModel()
+	err := c.gamesRepository.Save(data)
+	if err != nil {
+		return &ErrorPage{
+			Error: err,
+		}
+	}
+
+	return &RedirectPage{
+		Redirect: "/games",
 	}
 }

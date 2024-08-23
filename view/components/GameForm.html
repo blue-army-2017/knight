@@ -1,0 +1,61 @@
+{{define "GameForm"}}
+<form id="game-form" method="post">
+  <input type="hidden" name="id" value="{{.Game.ID}}" />
+  <label>
+    Opponent
+    <input type="text" name="opponent" value="{{.Game.Opponent}}" required />
+  </label>
+  <label>
+    {{if .Game.Home}}
+    <input
+      type="checkbox"
+      role="switch"
+      name="home"
+      value="true"
+      checked
+      aria-checked="true"
+    />
+    {{else}}
+    <input
+      type="checkbox"
+      role="switch"
+      name="home"
+      value="true"
+      aria-checked="false"
+    />
+    {{end}}
+    <span>Home</span>
+  </label>
+  <label>
+    <select name="mode" aria-label="Mode" required>
+      {{if eq .Game.Mode "regular"}}
+      <option value="regular" selected>Regular</option>
+      {{else}}
+      <option value="regular">Regular</option>
+      {{end}}
+      <!-- split options -->
+      {{if eq .Game.Mode "playoffs"}}
+      <option value="playoffs" selected>Playoffs</option>
+      {{else}}
+      <option value="playoffs">Playoffs</option>
+      {{end}}
+    </select>
+  </label>
+  <label>
+    <input type="date" name="date" value="{{.Game.Date}}" aria-label="Date" />
+  </label>
+  <label>
+    <select name="season_id" aria-label="Season" required>
+      {{range .Seasons}}
+      <!-- start range -->
+      {{if eq .ID $.Game.SeasonID}}
+      <option value="{{.ID}}" selected>{{.Name}}</option>
+      {{else}}
+      <option value="{{.ID}}">{{.Name}}</option>
+      {{end}}
+      <!-- end range -->
+      {{end}}
+    </select>
+  </label>
+</form>
+{{end}}
