@@ -45,6 +45,8 @@ type SeasonGameController interface {
 	GetIndex(seasonId string) Page
 	GetNew() Page
 	PostNew(game *SeasonGameDto) Page
+	GetEdit(gameId string) Page
+	PostEdit(game *SeasonGameDto, delete bool) Page
 }
 
 type DefaultSeasonGameController struct {
@@ -119,6 +121,56 @@ func (c *DefaultSeasonGameController) GetNew() Page {
 func (c *DefaultSeasonGameController) PostNew(game *SeasonGameDto) Page {
 	data := game.ToModel()
 	err := c.gamesRepository.Save(data)
+	if err != nil {
+		return &ErrorPage{
+			Error: err,
+		}
+	}
+
+	return &RedirectPage{
+		Redirect: "/games",
+	}
+}
+
+func (c *DefaultSeasonGameController) GetEdit(gameId string) Page {
+	data, err := c.gamesRepository.FindById(gameId)
+	if err != nil {
+		return &ErrorPage{
+			Error: err,
+		}
+	}
+	game := CreateSeasonGameDto(data)
+
+	seasonsData, err := c.seasonsRepository.FindAll("created desc")
+	if err != nil {
+		return &ErrorPage{
+			Error: err,
+		}
+	}
+	var seasons []SeasonDto
+	for _, data := range seasonsData {
+		season := CreateSeasonDto(&data)
+		seasons = append(seasons, *season)
+	}
+
+	return &HtmlPage{
+		Template: "pages/games/edit",
+		Data: gin.H{
+			"Game":    game,
+			"Seasons": seasons,
+		},
+	}
+}
+
+func (c *DefaultSeasonGameController) PostEdit(game *SeasonGameDto, delete bool) Page {
+	data := game.ToModel()
+
+	var err error
+	if delete {
+		err = c.gamesRepository.Delete(data)
+	} else {
+		err = c.gamesRepository.Save(data)
+	}
 	if err != nil {
 		return &ErrorPage{
 			Error: err,

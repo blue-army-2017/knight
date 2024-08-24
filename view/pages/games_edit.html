@@ -1,0 +1,25 @@
+{{define "pages/games/edit"}}
+<!doctype html>
+<html lang="en">
+  {{template "head"}}
+  <body>
+    {{template "Header"}}
+    <main class="container">
+      <h3>Edit Season Game</h3>
+      <section>{{template "GameForm" .}}</section>
+      <section class="grid">
+        <button type="submit" form="game-form">Save</button>
+        <button
+          type="submit"
+          form="game-form"
+          formaction="?delete"
+          class="contrast"
+        >
+          Delete
+        </button>
+        {{template "BackBtn"}}
+      </section>
+    </main>
+  </body>
+</html>
+{{end}}

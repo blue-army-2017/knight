@@ -30,3 +30,21 @@ func handleSeasonGamesNewPost(ctx *gin.Context) {
 	page := seasonGamesController.PostNew(&game)
 	page.Render(ctx)
 }
+
+func handleSeasonGamesEdit(ctx *gin.Context) {
+	id := ctx.Param("id")
+	page := seasonGamesController.GetEdit(id)
+	page.Render(ctx)
+}
+
+func handleSeasonGamesEditPost(ctx *gin.Context) {
+	var game controller.SeasonGameDto
+	if err := ctx.Bind(&game); err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+	_, isDelete := ctx.GetQuery("delete")
+
+	page := seasonGamesController.PostEdit(&game, isDelete)
+	page.Render(ctx)
+}

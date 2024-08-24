@@ -32,6 +32,8 @@ func Register(router *gin.Engine) {
 	router.GET("/games", handleSeasonGames)
 	router.GET("/games/new", handleSeasonGamesNew)
 	router.POST("/games/new", handleSeasonGamesNewPost)
+	router.GET("/games/:id", handleSeasonGamesEdit)
+	router.POST("/games/:id", handleSeasonGamesEditPost)
 }
 
 func handleHealth(ctx *gin.Context) {
