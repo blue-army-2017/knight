@@ -26,3 +26,17 @@ type SeasonGame struct {
 	Season         Season
 	PresentMembers []Member `gorm:"many2many:present_members;"`
 }
+
+type SeasonPresence struct {
+	Name       string
+	HomeGames  int
+	TotalGames int
+}
+
+type MemberPresence struct {
+	Season     string
+	LastName   string
+	FirstName  string
+	HomeGames  int
+	TotalGames int
+}

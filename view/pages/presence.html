@@ -1,0 +1,46 @@
+{{define "pages/presence"}}
+<!doctype html>
+<html lang="en">
+  {{template "head"}}
+  <body>
+    {{template "Header"}}
+    <main class="container">
+      <h3>Presence Statistic</h3>
+      <section>
+        {{range $i, $p := .SeasonPresence}}
+        <details {{if eq $i 0}}open{{end}}>
+          <summary>{{$p.Name}}</summary>
+          <article class="grid">
+            <span>Home: {{$p.HomeGames}}</span>
+            <span>Away: {{$p.AwayGames}}</span>
+            <span>Total: {{$p.TotalGames}}</span>
+          </article>
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Home</th>
+                <th scope="col">Away</th>
+                <th scope="col">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{range $p.MemberPresence}}
+              <tr>
+                <th scope="row">{{.Pos}}</th>
+                <td>{{.Name}}</td>
+                <td>{{.HomeGames}}</td>
+                <td>{{.AwayGames}}</td>
+                <td>{{.TotalGames}}</td>
+              </tr>
+              {{end}}
+            </tbody>
+          </table>
+        </details>
+        {{end}}
+      </section>
+    </main>
+  </body>
+</html>
+{{end}}
