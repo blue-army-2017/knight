@@ -10,11 +10,11 @@
 - Run server
 
 ```sh
-go run .
+task
 ```
 
 - Migrate data
 
 ```sh
-go run ./migration knight.db ./migration/legacy-data.json
+task migrate
 ```
