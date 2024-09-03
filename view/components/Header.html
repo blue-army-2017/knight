@@ -6,6 +6,9 @@
     </ul>
     <ul>
       <li><a href="/">Home</a></li>
+      {{if isProd}}
+      <li><a href="/oauth2/sign_out">Logout</a></li>
+      {{end}}
     </ul>
   </nav>
 </header>
