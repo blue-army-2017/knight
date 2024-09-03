@@ -50,7 +50,12 @@
               </th>
               <th scope="row">{{.Date}}</th>
               <th scope="row">{{.Season}}</th>
-              <td><a href="/games/{{.ID}}" role="button">Edit</a></td>
+              <td class="grid">
+                <a href="/games/{{.ID}}" role="button">Edit</a>
+                <a href="/presence/{{.ID}}" role="button" class="contrast">
+                  Presence
+                </a>
+              </td>
             </tr>
             {{end}}
           </tbody>

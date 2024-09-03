@@ -37,6 +37,8 @@ func Register(router *gin.Engine) {
 
 	// Presence Module
 	router.GET("/presence", handlePresence)
+	router.GET("/presence/:gameId", handlePresenceEdit)
+	router.POST("/presence/:gameId", handlePresenceEditPost)
 }
 
 func handleHealth(ctx *gin.Context) {

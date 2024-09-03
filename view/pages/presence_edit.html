@@ -1,0 +1,41 @@
+{{define "pages/presence/edit"}}
+<!doctype html>
+<html lang="en">
+  {{template "head"}}
+  <body>
+    {{template "Header"}}
+    <main class="container">
+      <h3>Edit Presence - {{.Game.Opponent}} at {{.Game.Date}}</h3>
+      <section>
+        <form id="presence-form" method="post">
+          {{range .Members}}
+          <label>
+            {{if containsString $.PresentMembers .ID}}
+            <input
+              name="present_members[]"
+              type="checkbox"
+              role="switch"
+              value="{{.ID}}"
+              checked
+            />
+            {{else}}
+            <input
+              name="present_members[]"
+              type="checkbox"
+              role="switch"
+              value="{{.ID}}"
+            />
+            {{end}}
+            <span>{{.FirstName}} {{.LastName}}</span>
+          </label>
+          {{end}}
+        </form>
+      </section>
+      <section class="grid">
+        <button type="submit" form="presence-form">Save</button>
+        {{template "BackBtn"}}
+      </section>
+    </main>
+  </body>
+</html>
+{{end}}

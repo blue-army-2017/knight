@@ -8,6 +8,10 @@ import (
 	"gorm.io/gorm"
 )
 
+const (
+	WHERE_ID_IS = "id = ?"
+)
+
 var db *gorm.DB
 
 func init() {

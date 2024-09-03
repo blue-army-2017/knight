@@ -42,7 +42,9 @@ func (r *DefaultCRUDRepository[T]) FindAllBy(key string, value any, orderBy stri
 
 func (r *DefaultCRUDRepository[T]) FindById(id string) (*T, error) {
 	var entity T
-	result := db.First(&entity, "id = ?", id)
+	result := db.
+		Preload(clause.Associations).
+		First(&entity, WHERE_ID_IS, id)
 	return &entity, result.Error
 }
 
