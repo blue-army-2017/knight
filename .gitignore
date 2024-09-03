@@ -7,3 +7,6 @@ migration/*.json
 
 # Coverage
 *.out
+
+# OAuth Config
+oauth2-proxy.cfg
