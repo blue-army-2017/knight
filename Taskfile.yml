@@ -5,6 +5,8 @@ version: "3"
 tasks:
   default:
     cmd: go run .
+    env:
+      DB_NAME: db/knight.db
 
   build:
     cmd: go build

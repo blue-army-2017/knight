@@ -5,6 +5,7 @@ migration/
 .gitignore
 Dockerfile
 *.db
+db/
 README.md
 renovate.json
 Taskfile.yml

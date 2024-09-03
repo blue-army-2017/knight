@@ -3,8 +3,10 @@ services:
   knight:
     image: ghcr.io/blue-army-2017/knight:main
     container_name: knight
+    environment:
+      DB_NAME: /db/knight.db
     volumes:
-      - ./knight.db:/knight.db
+      - ./db/:/db/
     networks:
       - knight
 

@@ -3,6 +3,7 @@ knight
 
 # Database
 *.db
+db/
 migration/*.json
 
 # Coverage
