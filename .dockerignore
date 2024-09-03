@@ -1,0 +1,10 @@
+.git
+.github
+migration/
+.dockerignore
+.gitignore
+Dockerfile
+*.db
+README.md
+renovate.json
+Taskfile.yml
