@@ -17,6 +17,7 @@
               role="switch"
               value="{{.ID}}"
               checked
+              aria-checked="true"
             />
             {{else}}
             <input
@@ -24,6 +25,7 @@
               type="checkbox"
               role="switch"
               value="{{.ID}}"
+              aria-checked="false"
             />
             {{end}}
             <span>{{.FirstName}} {{.LastName}}</span>
