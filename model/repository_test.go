@@ -8,88 +8,63 @@ import (
 	"gorm.io/gorm"
 )
 
-var members = []Member{
-	{
-		ID:        "00",
-		FirstName: "Marvin",
-		LastName:  "The Paranoid Android",
-		Active:    false,
-	},
-	{
-		ID:        "42",
-		FirstName: "Arthur",
-		LastName:  "Dent",
-		Active:    true,
-	},
-	{
-		ID:        "43",
-		FirstName: "Ford",
-		LastName:  "Prefect",
-		Active:    true,
-	},
-}
-
-func setupRepoTest() *DefaultCRUDRepository[Member] {
-	r := db.Create(&members)
-	if r.Error != nil {
-		panic(r.Error)
-	}
-
-	return &DefaultCRUDRepository[Member]{}
-}
-
-func teardownRepoTest() {
-	r := db.Exec("DELETE FROM members")
-	if r.Error != nil {
-		panic(r.Error)
-	}
-}
-
 func TestDefaultCRUDRepositoryFindAll(t *testing.T) {
-	tested := setupRepoTest()
-	defer teardownRepoTest()
+	setupDB()
+	defer teardownDB()
+	tested := &DefaultCRUDRepository[Member]{}
 
 	result, err := tested.FindAll("last_name,first_name")
 
 	g := gomega.NewWithT(t)
 	g.Expect(err).To(gomega.BeNil())
-	g.Expect(result).To(gomega.HaveLen(3))
+	g.Expect(result).To(gomega.HaveLen(5))
 	g.Expect(result).To(gstruct.MatchAllElementsWithIndex(gstruct.IndexIdentity, gstruct.Elements{
-		"0": gomega.BeComparableTo(members[1]),
-		"1": gomega.BeComparableTo(members[2]),
-		"2": gomega.BeComparableTo(members[0]),
+		"0": gomega.HaveField("ID", "M004"),
+		"1": gomega.HaveField("ID", "M005"),
+		"2": gomega.HaveField("ID", "M001"),
+		"3": gomega.HaveField("ID", "M003"),
+		"4": gomega.HaveField("ID", "M002"),
 	}))
 }
 
 func TestDefaultCRUDRepositoryFindAllBy(t *testing.T) {
-	tested := setupRepoTest()
-	defer teardownRepoTest()
+	setupDB()
+	defer teardownDB()
+	tested := &DefaultCRUDRepository[Member]{}
 
 	result, err := tested.FindAllBy("active", true, "last_name,first_name")
 
 	g := gomega.NewWithT(t)
 	g.Expect(err).To(gomega.BeNil())
-	g.Expect(result).To(gomega.HaveLen(2))
+	g.Expect(result).To(gomega.HaveLen(3))
 	g.Expect(result).To(gstruct.MatchAllElementsWithIndex(gstruct.IndexIdentity, gstruct.Elements{
-		"0": gomega.BeComparableTo(members[1]),
-		"1": gomega.BeComparableTo(members[2]),
+		"0": gomega.HaveField("ID", "M005"),
+		"1": gomega.HaveField("ID", "M001"),
+		"2": gomega.HaveField("ID", "M003"),
 	}))
 }
 
 func TestDefaultCRUDRepositoryFindById(t *testing.T) {
-	tested := setupRepoTest()
-	defer teardownRepoTest()
+	setupDB()
+	defer teardownDB()
+	tested := &DefaultCRUDRepository[Member]{}
 
-	result, err := tested.FindById("42")
+	result, err := tested.FindById("M001")
 
 	g := gomega.NewWithT(t)
 	g.Expect(err).To(gomega.BeNil())
-	g.Expect(*result).To(gomega.BeComparableTo(members[1]))
+	g.Expect(*result).To(gomega.BeComparableTo(Member{
+		ID:        "M001",
+		FirstName: "John",
+		LastName:  "Doe",
+		Active:    true,
+	}))
 }
 
 func TestDefaultCRUDRepositoryFindByIdNotFound(t *testing.T) {
-	tested := setupRepoTest()
-	defer teardownRepoTest()
+	setupDB()
+	defer teardownDB()
+	tested := &DefaultCRUDRepository[Member]{}
 
 	_, err := tested.FindById("xxx")
 
@@ -98,10 +73,12 @@ func TestDefaultCRUDRepositoryFindByIdNotFound(t *testing.T) {
 }
 
 func TestDefaultCRUDRepositorySaveCreate(t *testing.T) {
-	tested := setupRepoTest()
-	defer teardownRepoTest()
+	setupDB()
+	defer teardownDB()
+	tested := &DefaultCRUDRepository[Member]{}
 
 	member := Member{
+		ID:        "M006",
 		FirstName: "Zaphod",
 		LastName:  "Beeblebrox",
 		Active:    true,
@@ -118,11 +95,12 @@ func TestDefaultCRUDRepositorySaveCreate(t *testing.T) {
 }
 
 func TestDefaultCRUDRepositorySaveUpdate(t *testing.T) {
-	tested := setupRepoTest()
-	defer teardownRepoTest()
+	setupDB()
+	defer teardownDB()
+	tested := &DefaultCRUDRepository[Member]{}
 
 	member := Member{
-		ID:        "43",
+		ID:        "M003",
 		FirstName: "Zaphod",
 		LastName:  "Beeblebrox",
 		Active:    true,
@@ -139,11 +117,12 @@ func TestDefaultCRUDRepositorySaveUpdate(t *testing.T) {
 }
 
 func TestDefaultCRUDRepositoryDelete(t *testing.T) {
-	tested := setupRepoTest()
-	defer teardownRepoTest()
+	setupDB()
+	defer teardownDB()
+	tested := &DefaultCRUDRepository[Member]{}
 
 	member := Member{
-		ID: "42",
+		ID: "M002",
 	}
 	err := tested.Delete(&member)
 
