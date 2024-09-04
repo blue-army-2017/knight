@@ -19,17 +19,17 @@ func TestDefaultPresenceRepositoryGetSeasonPresence(t *testing.T) {
 	g.Expect(result).To(gomega.HaveLen(3))
 	g.Expect(result).To(gstruct.MatchAllElementsWithIndex(gstruct.IndexIdentity, gstruct.Elements{
 		"0": gomega.BeComparableTo(SeasonPresence{
-			Name:       "Fall 2024",
+			Name:       SEASON_FALL,
 			HomeGames:  3,
 			TotalGames: 5,
 		}),
 		"1": gomega.BeComparableTo(SeasonPresence{
-			Name:       "Summer 2024",
+			Name:       SEASON_SUMMER,
 			HomeGames:  3,
 			TotalGames: 5,
 		}),
 		"2": gomega.BeComparableTo(SeasonPresence{
-			Name:       "Spring 2024",
+			Name:       SEASON_SPRING,
 			HomeGames:  3,
 			TotalGames: 5,
 		}),
@@ -48,63 +48,63 @@ func TestDefaultPresenceRepositoryGetMemberPresence(t *testing.T) {
 	g.Expect(result).To(gomega.HaveLen(9))
 	g.Expect(result).To(gstruct.MatchAllElementsWithIndex(gstruct.IndexIdentity, gstruct.Elements{
 		"0": gomega.BeComparableTo(MemberPresence{
-			Season:     "Fall 2024",
+			Season:     SEASON_FALL,
 			LastName:   "Davis",
 			FirstName:  "Charlie",
 			HomeGames:  0,
 			TotalGames: 2,
 		}),
 		"1": gomega.BeComparableTo(MemberPresence{
-			Season:     "Fall 2024",
+			Season:     SEASON_FALL,
 			LastName:   "Doe",
 			FirstName:  "John",
 			HomeGames:  0,
 			TotalGames: 2,
 		}),
 		"2": gomega.BeComparableTo(MemberPresence{
-			Season:     "Fall 2024",
+			Season:     SEASON_FALL,
 			LastName:   "Johnson",
 			FirstName:  "Alice",
 			HomeGames:  2,
 			TotalGames: 2,
 		}),
 		"3": gomega.BeComparableTo(MemberPresence{
-			Season:     "Summer 2024",
+			Season:     SEASON_SUMMER,
 			LastName:   "Johnson",
 			FirstName:  "Alice",
 			HomeGames:  3,
 			TotalGames: 3,
 		}),
 		"4": gomega.BeComparableTo(MemberPresence{
-			Season:     "Summer 2024",
+			Season:     SEASON_SUMMER,
 			LastName:   "Davis",
 			FirstName:  "Charlie",
 			HomeGames:  1,
 			TotalGames: 2,
 		}),
 		"5": gomega.BeComparableTo(MemberPresence{
-			Season:     "Summer 2024",
+			Season:     SEASON_SUMMER,
 			LastName:   "Doe",
 			FirstName:  "John",
 			HomeGames:  1,
 			TotalGames: 2,
 		}),
 		"6": gomega.BeComparableTo(MemberPresence{
-			Season:     "Spring 2024",
+			Season:     SEASON_SPRING,
 			LastName:   "Davis",
 			FirstName:  "Charlie",
 			HomeGames:  2,
 			TotalGames: 2,
 		}),
 		"7": gomega.BeComparableTo(MemberPresence{
-			Season:     "Spring 2024",
+			Season:     SEASON_SPRING,
 			LastName:   "Doe",
 			FirstName:  "John",
 			HomeGames:  1,
 			TotalGames: 2,
 		}),
 		"8": gomega.BeComparableTo(MemberPresence{
-			Season:     "Spring 2024",
+			Season:     SEASON_SPRING,
 			LastName:   "Johnson",
 			FirstName:  "Alice",
 			HomeGames:  1,

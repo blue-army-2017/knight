@@ -4,6 +4,12 @@ import (
 	_ "embed"
 )
 
+const (
+	SEASON_SPRING = "Spring 2024"
+	SEASON_SUMMER = "Summer 2024"
+	SEASON_FALL   = "Fall 2024"
+)
+
 var (
 	//go:embed sql/testdata.sql
 	testdataScript string
