@@ -22,4 +22,4 @@ tasks:
       DB_NAME: ":memory:"
 
   migrate:
-    cmd: go run ./migration knight.db ./migration/legacy-data.json
+    cmd: go run ./migration db/knight.db ./migration/legacy-data.json
