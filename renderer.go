@@ -10,6 +10,7 @@ func GetTemplateRenderer() *template.Template {
 	funcMap := template.FuncMap{
 		"containsString": slices.Contains[[]string, string],
 		"isProd":         isProd,
+		"plusPlus":       plusPlus,
 	}
 
 	return template.Must(
@@ -19,4 +20,8 @@ func GetTemplateRenderer() *template.Template {
 
 func isProd() bool {
 	return os.Getenv("GIN_MODE") == "release"
+}
+
+func plusPlus(n int) int {
+	return n + 1
 }

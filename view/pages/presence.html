@@ -25,14 +25,18 @@
                 <th scope="col">Total</th>
               </tr>
             </thead>
+            {{$prevGames := 0}}
             <tbody>
-              {{range $p.MemberPresence}}
+              {{range $pos, $e := $p.MemberPresence}}
               <tr>
-                <th scope="row">{{.Pos}}</th>
-                <td>{{.Name}}</td>
-                <td>{{.HomeGames}}</td>
-                <td>{{.AwayGames}}</td>
-                <td>{{.TotalGames}}</td>
+                <th scope="row">
+                  {{if ne $e.TotalGames $prevGames}}{{plusPlus $pos}}{{end}}
+                </th>
+                <td>{{$e.Name}}</td>
+                <td>{{$e.HomeGames}}</td>
+                <td>{{$e.AwayGames}}</td>
+                <td>{{$e.TotalGames}}</td>
+                {{$prevGames = $e.TotalGames}}
               </tr>
               {{end}}
             </tbody>

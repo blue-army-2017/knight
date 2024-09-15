@@ -20,7 +20,6 @@ type SeasonPresenceDto struct {
 }
 
 type MemberPresenceDto struct {
-	Pos  int
 	Name string
 	GameStats
 }
@@ -44,9 +43,8 @@ func CreateSeasonPresenceDto(seasonPresence []model.SeasonPresence, memberPresen
 			MemberPresence: []MemberPresenceDto{},
 		}
 
-		for i, member := range memberPresenceBySeason[season.Name] {
+		for _, member := range memberPresenceBySeason[season.Name] {
 			memberDto := MemberPresenceDto{
-				Pos:  i + 1,
 				Name: fmt.Sprintf("%s %s", member.FirstName, member.LastName),
 				GameStats: GameStats{
 					HomeGames:  member.HomeGames,
