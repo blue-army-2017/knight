@@ -3,9 +3,10 @@ package controller
 import (
 	"time"
 
-	"github.com/blue-army-2017/knight/model"
+	"github.com/blue-army-2017/knight/repository"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"golang.org/x/net/context"
 )
 
 type SeasonDto struct {
@@ -14,16 +15,16 @@ type SeasonDto struct {
 	Created string `form:"created"`
 }
 
-func CreateSeasonDto(season *model.Season) *SeasonDto {
-	return &SeasonDto{
+func CreateSeasonDto(season repository.Season) SeasonDto {
+	return SeasonDto{
 		ID:      season.ID,
 		Name:    season.Name,
 		Created: season.Created,
 	}
 }
 
-func (dto *SeasonDto) ToModel() *model.Season {
-	return &model.Season{
+func (dto *SeasonDto) ToModel() repository.SaveSeasonParams {
+	return repository.SaveSeasonParams{
 		ID:      dto.ID,
 		Name:    dto.Name,
 		Created: dto.Created,
@@ -39,17 +40,19 @@ type SeasonController interface {
 }
 
 type DefaultSeasonController struct {
-	repository model.CRUDRepository[model.Season]
+	repository repository.Querier
+	ctx        context.Context
 }
 
 func NewSeasonController() SeasonController {
 	return &DefaultSeasonController{
-		repository: model.NewCRUDRepository[model.Season](),
+		repository: repository.New(db),
+		ctx:        context.Background(),
 	}
 }
 
 func (c *DefaultSeasonController) GetIndex() Page {
-	seasons, err := c.repository.FindAll("created desc")
+	seasons, err := c.repository.FindAllSeasons(c.ctx)
 	if err != nil {
 		return &ErrorPage{
 			Error: err,
@@ -58,8 +61,8 @@ func (c *DefaultSeasonController) GetIndex() Page {
 
 	var dtos []SeasonDto
 	for _, season := range seasons {
-		dto := CreateSeasonDto(&season)
-		dtos = append(dtos, *dto)
+		dto := CreateSeasonDto(season)
+		dtos = append(dtos, dto)
 	}
 
 	return &HtmlPage{
@@ -86,7 +89,7 @@ func (c *DefaultSeasonController) GetNew() Page {
 
 func (c *DefaultSeasonController) PostNew(season *SeasonDto) Page {
 	data := season.ToModel()
-	err := c.repository.Save(data)
+	err := c.repository.SaveSeason(c.ctx, data)
 	if err != nil {
 		return &ErrorPage{
 			Error: err,
@@ -99,7 +102,7 @@ func (c *DefaultSeasonController) PostNew(season *SeasonDto) Page {
 }
 
 func (c *DefaultSeasonController) GetEdit(id string) Page {
-	season, err := c.repository.FindById(id)
+	season, err := c.repository.FindSeasonById(c.ctx, id)
 	if err != nil {
 		return &ErrorPage{
 			Error: err,
@@ -120,9 +123,9 @@ func (c *DefaultSeasonController) PostEdit(season *SeasonDto, delete bool) Page 
 
 	var err error
 	if delete {
-		err = c.repository.Delete(data)
+		err = c.repository.DeleteSeason(c.ctx, data.ID)
 	} else {
-		err = c.repository.Save(data)
+		err = c.repository.SaveSeason(c.ctx, data)
 	}
 	if err != nil {
 		return &ErrorPage{

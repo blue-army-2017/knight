@@ -1,9 +1,11 @@
 package controller
 
 import (
+	"context"
 	"time"
 
 	"github.com/blue-army-2017/knight/model"
+	"github.com/blue-army-2017/knight/repository"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -50,14 +52,16 @@ type SeasonGameController interface {
 }
 
 type DefaultSeasonGameController struct {
-	gamesRepository   model.CRUDRepository[model.SeasonGame]
-	seasonsRepository model.CRUDRepository[model.Season]
+	gamesRepository model.CRUDRepository[model.SeasonGame]
+	repository      repository.Querier
+	ctx             context.Context
 }
 
 func NewSeasonGameController() SeasonGameController {
 	return &DefaultSeasonGameController{
-		gamesRepository:   model.NewCRUDRepository[model.SeasonGame](),
-		seasonsRepository: model.NewCRUDRepository[model.Season](),
+		gamesRepository: model.NewCRUDRepository[model.SeasonGame](),
+		repository:      repository.New(db),
+		ctx:             context.Background(),
 	}
 }
 
@@ -97,7 +101,7 @@ func (c *DefaultSeasonGameController) GetNew() Page {
 		Date: time.Now().Format("2006-01-02"),
 	}
 
-	seasonsData, err := c.seasonsRepository.FindAll("created desc")
+	seasonsData, err := c.repository.FindAllSeasons(c.ctx)
 	if err != nil {
 		return &ErrorPage{
 			Error: err,
@@ -105,8 +109,8 @@ func (c *DefaultSeasonGameController) GetNew() Page {
 	}
 	var seasons []SeasonDto
 	for _, data := range seasonsData {
-		season := CreateSeasonDto(&data)
-		seasons = append(seasons, *season)
+		season := CreateSeasonDto(data)
+		seasons = append(seasons, season)
 	}
 
 	return &HtmlPage{
@@ -141,7 +145,7 @@ func (c *DefaultSeasonGameController) GetEdit(gameId string) Page {
 	}
 	game := CreateSeasonGameDto(data)
 
-	seasonsData, err := c.seasonsRepository.FindAll("created desc")
+	seasonsData, err := c.repository.FindAllSeasons(c.ctx)
 	if err != nil {
 		return &ErrorPage{
 			Error: err,
@@ -149,8 +153,8 @@ func (c *DefaultSeasonGameController) GetEdit(gameId string) Page {
 	}
 	var seasons []SeasonDto
 	for _, data := range seasonsData {
-		season := CreateSeasonDto(&data)
-		seasons = append(seasons, *season)
+		season := CreateSeasonDto(data)
+		seasons = append(seasons, season)
 	}
 
 	return &HtmlPage{
