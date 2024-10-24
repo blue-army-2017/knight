@@ -4,15 +4,14 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/blue-army-2017/knight/model"
 	"github.com/blue-army-2017/knight/repository"
 	"github.com/gin-gonic/gin"
 )
 
 type GameStats struct {
-	HomeGames  int
-	AwayGames  int
-	TotalGames int
+	HomeGames  int64
+	AwayGames  int64
+	TotalGames int64
 }
 
 type SeasonPresenceDto struct {
@@ -26,8 +25,8 @@ type MemberPresenceDto struct {
 	GameStats
 }
 
-func CreateSeasonPresenceDto(seasonPresence []model.SeasonPresence, memberPresence []model.MemberPresence) []SeasonPresenceDto {
-	memberPresenceBySeason := make(map[string][]model.MemberPresence)
+func CreateSeasonPresenceDto(seasonPresence []repository.FindSeasonPresenceRow, memberPresence []repository.FindMemberPresenceRow) []SeasonPresenceDto {
+	memberPresenceBySeason := make(map[string][]repository.FindMemberPresenceRow)
 	for _, member := range memberPresence {
 		season := member.Season
 		memberPresenceBySeason[season] = append(memberPresenceBySeason[season], member)
@@ -38,8 +37,8 @@ func CreateSeasonPresenceDto(seasonPresence []model.SeasonPresence, memberPresen
 		seasonDto := SeasonPresenceDto{
 			Name: season.Name,
 			GameStats: GameStats{
-				HomeGames:  season.HomeGames,
-				AwayGames:  season.TotalGames - season.HomeGames,
+				HomeGames:  int64(season.HomeGames.Float64),
+				AwayGames:  season.TotalGames - int64(season.HomeGames.Float64),
 				TotalGames: season.TotalGames,
 			},
 			MemberPresence: []MemberPresenceDto{},
@@ -49,8 +48,8 @@ func CreateSeasonPresenceDto(seasonPresence []model.SeasonPresence, memberPresen
 			memberDto := MemberPresenceDto{
 				Name: fmt.Sprintf("%s %s", member.FirstName, member.LastName),
 				GameStats: GameStats{
-					HomeGames:  member.HomeGames,
-					AwayGames:  member.TotalGames - member.HomeGames,
+					HomeGames:  int64(member.HomeGames.Float64),
+					AwayGames:  member.TotalGames - int64(member.HomeGames.Float64),
 					TotalGames: member.TotalGames,
 				},
 			}
@@ -69,27 +68,25 @@ type PresenceController interface {
 }
 
 type DefaultPresenceController struct {
-	presenceRepository model.PresenceRepository
-	repository         repository.Querier
-	ctx                context.Context
+	repository repository.Querier
+	ctx        context.Context
 }
 
 func NewPresenceController() PresenceController {
 	return &DefaultPresenceController{
-		presenceRepository: model.NewPresenceRepository(),
-		repository:         repository.New(db),
-		ctx:                context.Background(),
+		repository: repository.New(db),
+		ctx:        context.Background(),
 	}
 }
 
 func (c *DefaultPresenceController) GetIndex() Page {
-	seasonPresence, err := c.presenceRepository.GetSeasonPresence()
+	seasonPresence, err := c.repository.FindSeasonPresence(c.ctx)
 	if err != nil {
 		return &ErrorPage{
 			Error: err,
 		}
 	}
-	memberPresence, err := c.presenceRepository.GetMemberPresence()
+	memberPresence, err := c.repository.FindMemberPresence(c.ctx)
 	if err != nil {
 		return &ErrorPage{
 			Error: err,
@@ -119,8 +116,12 @@ func (c *DefaultPresenceController) GetEdit(gameId string) Page {
 		}
 	}
 
-	presentMembers := []string{}
-	// TODO: get present members of game
+	presentMembers, err := c.repository.FindPresentMembersForGame(c.ctx, gameId)
+	if err != nil {
+		return &ErrorPage{
+			Error: err,
+		}
+	}
 
 	gameDto := CreateSeasonGameDto(game.SeasonGame, game.SeasonName)
 	memberDtos := []MemberDto{}
@@ -140,9 +141,22 @@ func (c *DefaultPresenceController) GetEdit(gameId string) Page {
 }
 
 func (c *DefaultPresenceController) GetEditPost(gameId string, presentMembers []string) Page {
-	if err := c.presenceRepository.SavePresentMembers(gameId, presentMembers); err != nil {
+	err := c.repository.DeletePresentMembersForGame(c.ctx, gameId)
+	if err != nil {
 		return &ErrorPage{
 			Error: err,
+		}
+	}
+
+	for _, memberId := range presentMembers {
+		err := c.repository.SavePresentMemberForGame(c.ctx, repository.SavePresentMemberForGameParams{
+			SeasonGameID: gameId,
+			MemberID:     memberId,
+		})
+		if err != nil {
+			return &ErrorPage{
+				Error: err,
+			}
 		}
 	}
 
