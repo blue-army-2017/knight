@@ -1,9 +1,11 @@
 package controller
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/blue-army-2017/knight/model"
+	"github.com/blue-army-2017/knight/repository"
 	"github.com/gin-gonic/gin"
 )
 
@@ -69,14 +71,16 @@ type PresenceController interface {
 type DefaultPresenceController struct {
 	presenceRepository   model.PresenceRepository
 	seasonGameRepository model.CRUDRepository[model.SeasonGame]
-	memberRepository     model.CRUDRepository[model.Member]
+	repository           repository.Querier
+	ctx                  context.Context
 }
 
 func NewPresenceController() PresenceController {
 	return &DefaultPresenceController{
 		presenceRepository:   model.NewPresenceRepository(),
 		seasonGameRepository: model.NewCRUDRepository[model.SeasonGame](),
-		memberRepository:     model.NewCRUDRepository[model.Member](),
+		repository:           repository.New(db),
+		ctx:                  context.Background(),
 	}
 }
 
@@ -110,7 +114,7 @@ func (c *DefaultPresenceController) GetEdit(gameId string) Page {
 			Error: err,
 		}
 	}
-	members, err := c.memberRepository.FindAll("last_name, first_name")
+	members, err := c.repository.FindAllMembers(c.ctx)
 	if err != nil {
 		return &ErrorPage{
 			Error: err,
@@ -125,8 +129,8 @@ func (c *DefaultPresenceController) GetEdit(gameId string) Page {
 	gameDto := CreateSeasonGameDto(game)
 	memberDtos := []MemberDto{}
 	for _, member := range members {
-		dto := CreateMemberDto(&member)
-		memberDtos = append(memberDtos, *dto)
+		dto := CreateMemberDto(member)
+		memberDtos = append(memberDtos, dto)
 	}
 
 	return &HtmlPage{
