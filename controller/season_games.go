@@ -4,11 +4,15 @@ import (
 	"context"
 	"time"
 
-	"github.com/blue-army-2017/knight/model"
 	"github.com/blue-army-2017/knight/repository"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
+
+type seasonGameRow struct {
+	SeasonGame repository.SeasonGame
+	SeasonName string
+}
 
 type SeasonGameDto struct {
 	ID       string `form:"id"`
@@ -20,23 +24,30 @@ type SeasonGameDto struct {
 	Season   string
 }
 
-func CreateSeasonGameDto(game *model.SeasonGame) *SeasonGameDto {
-	return &SeasonGameDto{
+func CreateSeasonGameDto(game repository.SeasonGame, seasonName string) SeasonGameDto {
+	return SeasonGameDto{
 		ID:       game.ID,
 		Opponent: game.Opponent,
-		Home:     game.Home,
+		Home:     game.Home > 0.0,
 		Mode:     game.Mode,
 		Date:     game.Date,
 		SeasonID: game.SeasonID,
-		Season:   game.Season.Name,
+		Season:   seasonName,
 	}
 }
 
-func (dto *SeasonGameDto) ToModel() *model.SeasonGame {
-	return &model.SeasonGame{
+func (dto *SeasonGameDto) ToModel() repository.SaveSeasonGameParams {
+	var home float64
+	if dto.Home {
+		home = 1.0
+	} else {
+		home = 0.0
+	}
+
+	return repository.SaveSeasonGameParams{
 		ID:       dto.ID,
 		Opponent: dto.Opponent,
-		Home:     dto.Home,
+		Home:     home,
 		Mode:     dto.Mode,
 		Date:     dto.Date,
 		SeasonID: dto.SeasonID,
@@ -52,37 +63,43 @@ type SeasonGameController interface {
 }
 
 type DefaultSeasonGameController struct {
-	gamesRepository model.CRUDRepository[model.SeasonGame]
-	repository      repository.Querier
-	ctx             context.Context
+	repository repository.Querier
+	ctx        context.Context
 }
 
 func NewSeasonGameController() SeasonGameController {
 	return &DefaultSeasonGameController{
-		gamesRepository: model.NewCRUDRepository[model.SeasonGame](),
-		repository:      repository.New(db),
-		ctx:             context.Background(),
+		repository: repository.New(db),
+		ctx:        context.Background(),
 	}
 }
 
 func (c *DefaultSeasonGameController) GetIndex(seasonId string) Page {
-	var games []model.SeasonGame
-	var err error
-	if len(seasonId) > 0 {
-		games, err = c.gamesRepository.FindAllBy("season_id", seasonId, "date desc")
-	} else {
-		games, err = c.gamesRepository.FindAll("date desc")
-	}
-	if err != nil {
-		return &ErrorPage{
-			Error: err,
-		}
-	}
-
 	var dtos []SeasonGameDto
-	for _, game := range games {
-		dto := CreateSeasonGameDto(&game)
-		dtos = append(dtos, *dto)
+	if len(seasonId) > 0 {
+		rows, err := c.repository.FindAllSeasonGamesBySeason(c.ctx, seasonId)
+		if err != nil {
+			return &ErrorPage{
+				Error: err,
+			}
+		}
+
+		for _, row := range rows {
+			dto := CreateSeasonGameDto(row.SeasonGame, row.SeasonName)
+			dtos = append(dtos, dto)
+		}
+	} else {
+		rows, err := c.repository.FindAllSeasonGames(c.ctx)
+		if err != nil {
+			return &ErrorPage{
+				Error: err,
+			}
+		}
+
+		for _, row := range rows {
+			dto := CreateSeasonGameDto(row.SeasonGame, row.SeasonName)
+			dtos = append(dtos, dto)
+		}
 	}
 
 	return &HtmlPage{
@@ -124,7 +141,7 @@ func (c *DefaultSeasonGameController) GetNew() Page {
 
 func (c *DefaultSeasonGameController) PostNew(game *SeasonGameDto) Page {
 	data := game.ToModel()
-	err := c.gamesRepository.Save(data)
+	err := c.repository.SaveSeasonGame(c.ctx, data)
 	if err != nil {
 		return &ErrorPage{
 			Error: err,
@@ -137,13 +154,13 @@ func (c *DefaultSeasonGameController) PostNew(game *SeasonGameDto) Page {
 }
 
 func (c *DefaultSeasonGameController) GetEdit(gameId string) Page {
-	data, err := c.gamesRepository.FindById(gameId)
+	data, err := c.repository.FindSeasonGameById(c.ctx, gameId)
 	if err != nil {
 		return &ErrorPage{
 			Error: err,
 		}
 	}
-	game := CreateSeasonGameDto(data)
+	game := CreateSeasonGameDto(data.SeasonGame, data.SeasonName)
 
 	seasonsData, err := c.repository.FindAllSeasons(c.ctx)
 	if err != nil {
@@ -171,9 +188,9 @@ func (c *DefaultSeasonGameController) PostEdit(game *SeasonGameDto, delete bool)
 
 	var err error
 	if delete {
-		err = c.gamesRepository.Delete(data)
+		err = c.repository.DeleteSeasonGame(c.ctx, data.ID)
 	} else {
-		err = c.gamesRepository.Save(data)
+		err = c.repository.SaveSeasonGame(c.ctx, data)
 	}
 	if err != nil {
 		return &ErrorPage{
