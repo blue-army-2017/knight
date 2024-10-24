@@ -23,3 +23,9 @@ tasks:
 
   migrate:
     cmd: go run ./migration db/knight.db ./migration/legacy-data.json
+
+  db-create-migration:
+    cmd: migrate create -ext sql -dir schema -seq {{.CLI_ARGS}}
+
+  db-run-migrations:
+    cmd: migrate -database sqlite3://db/knight.db -path schema up
