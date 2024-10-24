@@ -69,18 +69,16 @@ type PresenceController interface {
 }
 
 type DefaultPresenceController struct {
-	presenceRepository   model.PresenceRepository
-	seasonGameRepository model.CRUDRepository[model.SeasonGame]
-	repository           repository.Querier
-	ctx                  context.Context
+	presenceRepository model.PresenceRepository
+	repository         repository.Querier
+	ctx                context.Context
 }
 
 func NewPresenceController() PresenceController {
 	return &DefaultPresenceController{
-		presenceRepository:   model.NewPresenceRepository(),
-		seasonGameRepository: model.NewCRUDRepository[model.SeasonGame](),
-		repository:           repository.New(db),
-		ctx:                  context.Background(),
+		presenceRepository: model.NewPresenceRepository(),
+		repository:         repository.New(db),
+		ctx:                context.Background(),
 	}
 }
 
@@ -108,7 +106,7 @@ func (c *DefaultPresenceController) GetIndex() Page {
 }
 
 func (c *DefaultPresenceController) GetEdit(gameId string) Page {
-	game, err := c.seasonGameRepository.FindById(gameId)
+	game, err := c.repository.FindSeasonGameById(c.ctx, gameId)
 	if err != nil {
 		return &ErrorPage{
 			Error: err,
@@ -122,11 +120,9 @@ func (c *DefaultPresenceController) GetEdit(gameId string) Page {
 	}
 
 	presentMembers := []string{}
-	for _, member := range game.PresentMembers {
-		presentMembers = append(presentMembers, member.ID)
-	}
+	// TODO: get present members of game
 
-	gameDto := CreateSeasonGameDto(game)
+	gameDto := CreateSeasonGameDto(game.SeasonGame, game.SeasonName)
 	memberDtos := []MemberDto{}
 	for _, member := range members {
 		dto := CreateMemberDto(member)
