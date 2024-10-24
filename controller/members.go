@@ -1,7 +1,9 @@
 package controller
 
 import (
-	"github.com/blue-army-2017/knight/model"
+	"context"
+
+	"github.com/blue-army-2017/knight/repository"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -13,21 +15,28 @@ type MemberDto struct {
 	Active    bool   `form:"active"`
 }
 
-func CreateMemberDto(member *model.Member) *MemberDto {
-	return &MemberDto{
+func CreateMemberDto(member repository.Member) MemberDto {
+	return MemberDto{
 		ID:        member.ID,
 		FirstName: member.FirstName,
 		LastName:  member.LastName,
-		Active:    member.Active,
+		Active:    member.Active > 0.0,
 	}
 }
 
-func (dto *MemberDto) ToModel() *model.Member {
-	return &model.Member{
+func (dto *MemberDto) ToModel() repository.SaveMemberParams {
+	var active float64
+	if dto.Active {
+		active = 1.0
+	} else {
+		active = 0.0
+	}
+
+	return repository.SaveMemberParams{
 		ID:        dto.ID,
 		FirstName: dto.FirstName,
 		LastName:  dto.LastName,
-		Active:    dto.Active,
+		Active:    active,
 	}
 }
 
@@ -40,17 +49,19 @@ type MemberController interface {
 }
 
 type DefaultMemberController struct {
-	repository model.CRUDRepository[model.Member]
+	repository repository.Querier
+	ctx        context.Context
 }
 
 func NewMemberController() MemberController {
 	return &DefaultMemberController{
-		repository: model.NewCRUDRepository[model.Member](),
+		repository: repository.New(db),
+		ctx:        context.Background(),
 	}
 }
 
 func (c *DefaultMemberController) GetIndex() Page {
-	members, err := c.repository.FindAll("last_name,first_name")
+	members, err := c.repository.FindAllMembers(c.ctx)
 	if err != nil {
 		return &ErrorPage{
 			Error: err,
@@ -59,8 +70,8 @@ func (c *DefaultMemberController) GetIndex() Page {
 
 	var dtos []MemberDto
 	for _, member := range members {
-		dto := CreateMemberDto(&member)
-		dtos = append(dtos, *dto)
+		dto := CreateMemberDto(member)
+		dtos = append(dtos, dto)
 	}
 
 	return &HtmlPage{
@@ -87,7 +98,7 @@ func (c *DefaultMemberController) GetNew() Page {
 
 func (c *DefaultMemberController) PostNew(member *MemberDto) Page {
 	data := member.ToModel()
-	err := c.repository.Save(data)
+	err := c.repository.SaveMember(c.ctx, data)
 	if err != nil {
 		return &ErrorPage{
 			Error: err,
@@ -100,7 +111,7 @@ func (c *DefaultMemberController) PostNew(member *MemberDto) Page {
 }
 
 func (c *DefaultMemberController) GetEdit(id string) Page {
-	member, err := c.repository.FindById(id)
+	member, err := c.repository.FindMemberById(c.ctx, id)
 	if err != nil {
 		return &ErrorPage{
 			Error: err,
@@ -117,7 +128,7 @@ func (c *DefaultMemberController) GetEdit(id string) Page {
 
 func (c *DefaultMemberController) PostEdit(member *MemberDto) Page {
 	data := member.ToModel()
-	if err := c.repository.Save(data); err != nil {
+	if err := c.repository.SaveMember(c.ctx, data); err != nil {
 		return &ErrorPage{
 			Error: err,
 		}

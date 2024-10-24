@@ -11,3 +11,6 @@ migration/*.json
 
 # OAuth Config
 oauth2-proxy.cfg
+
+# Generated Queries
+repository/
