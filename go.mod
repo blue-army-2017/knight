@@ -7,6 +7,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/mattn/go-sqlite3 v1.14.22
 	github.com/onsi/gomega v1.34.2
+	golang.org/x/net v0.28.0
 	gorm.io/driver/sqlite v1.5.6
 	gorm.io/gorm v1.25.12
 )
@@ -36,7 +37,6 @@ require (
 	github.com/ugorji/go/codec v1.2.12 // indirect
 	golang.org/x/arch v0.8.0 // indirect
 	golang.org/x/crypto v0.26.0 // indirect
-	golang.org/x/net v0.28.0 // indirect
 	golang.org/x/sys v0.24.0 // indirect
 	golang.org/x/text v0.17.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
