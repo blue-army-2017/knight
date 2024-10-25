@@ -1,15 +1,15 @@
 package main
 
 import (
+	"context"
+	"database/sql"
 	"encoding/json"
 	"log"
 	"os"
 	"time"
 
-	"github.com/blue-army-2017/knight/model"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
+	"github.com/blue-army-2017/knight/repository"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 var (
@@ -33,15 +33,10 @@ func main() {
 }
 
 func migrate(dbFile, dataFile string) {
-	db, err := gorm.Open(sqlite.Open(dbFile), &gorm.Config{})
+	db, err := sql.Open("sqlite3", dbFile)
 	checkErr(err)
-
-	err = db.AutoMigrate(&model.Member{})
-	checkErr(err)
-	err = db.AutoMigrate(&model.Season{})
-	checkErr(err)
-	err = db.AutoMigrate(&model.SeasonGame{})
-	checkErr(err)
+	repo := repository.New(db)
+	ctx := context.Background()
 
 	dataFileContent, err := os.ReadFile(dataFile)
 	checkErr(err)
@@ -49,64 +44,71 @@ func migrate(dbFile, dataFile string) {
 	err = json.Unmarshal(dataFileContent, &data)
 	checkErr(err)
 
-	var members []model.Member
+	// Members
 	for id, memberData := range data.Member {
-		member := model.Member{
+		var active float64
+		if memberData.Active {
+			active = 1.0
+		} else {
+			active = 0.0
+		}
+
+		member := repository.SaveMemberParams{
 			ID:        id,
 			FirstName: memberData.FirstName,
 			LastName:  memberData.LastName,
-			Active:    memberData.Active,
+			Active:    active,
 		}
-		members = append(members, member)
+		err := repo.SaveMember(ctx, member)
+		checkErr(err)
 	}
-	// Members
-	result := db.
-		Clauses(clause.OnConflict{UpdateAll: true}).
-		Create(&members)
-	checkErr(result.Error)
-	log.Printf("Migrated %d members\n", result.RowsAffected)
+	log.Printf("Migrated %d members\n", len(data.Member))
 
-	var seasons []model.Season
-	var seasonGames []model.SeasonGame
+	// Seasons
 	for seasonId, seasonData := range data.Season {
-		season := model.Season{
+		season := repository.SaveSeasonParams{
 			ID:      seasonId,
 			Name:    seasonData.Name,
 			Created: seasonData.Created.In(timeLocation).Format("2006-01-02"),
 		}
-		seasons = append(seasons, season)
+		err := repo.SaveSeason(ctx, season)
+		checkErr(err)
+		log.Printf("Migrated season %s\n", seasonData.Name)
 
+		// Season Games
 		for gameId, gameData := range seasonData.Games {
-			game := model.SeasonGame{
+			var home float64
+			if gameData.Home {
+				home = 1.0
+			} else {
+				home = 0.0
+			}
+
+			game := repository.SaveSeasonGameParams{
 				ID:       gameId,
 				Opponent: gameData.Opponent,
-				Home:     gameData.Home,
+				Home:     home,
 				Mode:     gameData.Mode,
 				Date:     gameData.Date.In(timeLocation).Format("2006-01-02"),
 				SeasonID: seasonId,
 			}
+			err := repo.SaveSeasonGame(ctx, game)
+			checkErr(err)
 
-			var presentMembers []model.Member
+			// Present Members
+			err = repo.DeletePresentMembersForGame(ctx, gameId)
+			checkErr(err)
+
 			for _, memberId := range gameData.PresentMembers {
-				presentMembers = append(presentMembers, model.Member{ID: memberId})
+				err := repo.SavePresentMemberForGame(ctx, repository.SavePresentMemberForGameParams{
+					SeasonGameID: gameId,
+					MemberID:     memberId,
+				})
+				checkErr(err)
 			}
-			game.PresentMembers = presentMembers
-
-			seasonGames = append(seasonGames, game)
 		}
+		log.Printf("Migrated %d games for season %s\n", len(seasonData.Games), seasonData.Name)
 	}
-	// Seasons
-	result = db.
-		Clauses(clause.OnConflict{UpdateAll: true}).
-		Create(&seasons)
-	checkErr(result.Error)
-	log.Printf("Migrated %d seasons\n", result.RowsAffected)
-	// Season Games
-	result = db.
-		Clauses(clause.OnConflict{UpdateAll: true}).
-		Create(&seasonGames)
-	checkErr(result.Error)
-	log.Printf("Migrated %d season games\n", result.RowsAffected)
 }
 
 func checkErr(err error) {
