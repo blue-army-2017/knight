@@ -1,19 +1,26 @@
 -- name: FindAllSeasons :many
-SELECT *
-FROM seasons
-ORDER BY created DESC;
+SELECT
+  *
+FROM
+  seasons
+ORDER BY
+  created DESC;
 
 -- name: FindSeasonById :one
-SELECT *
-FROM seasons
-WHERE id = ?;
+SELECT
+  *
+FROM
+  seasons
+WHERE
+  id = ?;
 
 -- name: SaveSeason :exec
-INSERT OR REPLACE
-INTO seasons (id, name, created)
-VALUES (?, ?, ?);
+INSERT OR REPLACE INTO
+  seasons (id, name, created)
+VALUES
+  (?, ?, ?);
 
 -- name: DeleteSeason :exec
-DELETE
-FROM seasons
-WHERE id = ?;
+DELETE FROM seasons
+WHERE
+  id = ?;
