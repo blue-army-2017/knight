@@ -1,6 +1,6 @@
 FROM golang:1.23 AS builder
 
-RUN go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+RUN go install github.com/sqlc-dev/sqlc/cmd/sqlc@v1.27.0
 
 WORKDIR /app
 
