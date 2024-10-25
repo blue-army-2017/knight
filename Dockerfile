@@ -1,5 +1,7 @@
 FROM golang:1.23 AS builder
 
+RUN go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+
 WORKDIR /app
 
 COPY go.mod go.sum ./
@@ -7,6 +9,7 @@ RUN go mod download
 
 COPY . .
 
+RUN sqlc generate
 RUN GOOS=linux go build -o /knight
 
 
