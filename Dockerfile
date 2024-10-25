@@ -20,6 +20,7 @@ WORKDIR /
 COPY --from=builder /knight /knight
 COPY assets/ assets/
 COPY view/ view/
+COPY schema/ schema/
 
 ENV GIN_MODE=release
 
