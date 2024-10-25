@@ -7,19 +7,32 @@ tasks:
     cmd: go run .
     env:
       DB_NAME: db/knight.db
+    deps:
+      - generate-queries
 
   build:
     cmd: go build
+    deps:
+      - generate-queries
 
   test:
     cmd: go test ./...
     env:
       DB_NAME: ":memory:"
+    deps:
+      - generate-queries
 
   coverage:
     cmd: go test -coverprofile cover.out ./...
     env:
       DB_NAME: ":memory:"
+    deps:
+      - generate-queries
+
+  generate-queries:
+    cmd: sqlc generate
+    deps:
+      - install-sqlc
 
   migrate:
     cmd: go run ./migration db/knight.db ./migration/legacy-data.json
@@ -33,11 +46,6 @@ tasks:
     cmd: migrate -database sqlite3://db/knight.db -path schema up
     deps:
       - install-golang-migrate
-
-  db-generate-queries:
-    cmd: sqlc generate
-    deps:
-      - install-sqlc
 
   install-golang-migrate:
     cmd: go install -tags 'sqlite3' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
