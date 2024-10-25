@@ -26,6 +26,12 @@ jobs:
         with:
           go-version-file: go.mod
 
+      - name: Set up sqlc
+        uses: sqlc-dev/setup-sqlc@v4
+
+      - name: Generate repository
+        run: sqlc generate
+
       - name: Check code format
         run: test -z "$(gofmt -l .)"
 
@@ -46,6 +52,12 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
+
+      - name: Set up sqlc
+        uses: sqlc-dev/setup-sqlc@v4
+
+      - name: Generate repository
+        run: sqlc generate
 
       - name: Build binary
         run: go build
@@ -70,6 +82,12 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
+
+      - name: Set up sqlc
+        uses: sqlc-dev/setup-sqlc@v4
+
+      - name: Generate repository
+        run: sqlc generate
 
       - name: Run tests
         run: go test -coverprofile cover.out ./...
