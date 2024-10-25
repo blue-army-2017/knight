@@ -1,11 +1,11 @@
 package controller
 
 import (
+	"database/sql"
 	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 type Page interface {
@@ -34,7 +34,7 @@ type ErrorPage struct {
 }
 
 func (p *ErrorPage) Render(ctx *gin.Context) {
-	if errors.Is(p.Error, gorm.ErrRecordNotFound) {
+	if errors.Is(p.Error, sql.ErrNoRows) {
 		ctx.AbortWithError(http.StatusBadRequest, p.Error)
 	} else {
 		ctx.AbortWithError(http.StatusInternalServerError, p.Error)
