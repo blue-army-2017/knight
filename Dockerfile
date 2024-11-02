@@ -9,8 +9,8 @@ RUN go mod download
 
 COPY . .
 
-RUN sqlc generate
-RUN GOOS=linux go build -o /knight
+RUN sqlc generate \
+  && GOOS=linux go build -o /knight
 
 
 FROM gcr.io/distroless/base-debian12:nonroot
