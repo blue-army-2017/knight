@@ -67,7 +67,7 @@ jobs:
         run: go build
 
       - name: Upload binary artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: knight
           path: knight
@@ -101,7 +101,7 @@ jobs:
           DB_NAME: ":memory:"
 
       - name: Upload coverage artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: coverage-report
           path: cover.out
